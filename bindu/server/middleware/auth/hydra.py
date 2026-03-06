@@ -55,7 +55,9 @@ class HydraMiddleware(AuthMiddleware):
                 timeout=getattr(self.config, "timeout", 10),
                 verify_ssl=getattr(self.config, "verify_ssl", True),
             )
-            logger.info(f"Hydra middleware initialized. Admin URL: {self.config.admin_url}")
+            logger.info(
+                f"Hydra middleware initialized. Admin URL: {self.config.admin_url}"
+            )
         except Exception as e:
             logger.error(f"Failed to initialize Hydra client: {e}")
             raise
@@ -83,7 +85,9 @@ class HydraMiddleware(AuthMiddleware):
             if introspection_result["exp"] < current_time:
                 raise ValueError(f"Token expired at {introspection_result['exp']}")
 
-            expires_at = min(introspection_result["exp"], current_time + self._cache_ttl)
+            expires_at = min(
+                introspection_result["exp"], current_time + self._cache_ttl
+            )
             self._introspection_cache[cache_key] = {
                 "data": introspection_result,
                 "expires_at": expires_at,
@@ -106,7 +110,9 @@ class HydraMiddleware(AuthMiddleware):
             "sub": token_payload["sub"],
             "is_m2m": is_m2m,
             "client_id": token_payload.get("client_id", ""),
-            "scope": token_payload.get("scope", "").split() if token_payload.get("scope") else [],
+            "scope": token_payload.get("scope", "").split()
+            if token_payload.get("scope")
+            else [],
             "exp": token_payload.get("exp", 0),
             "iat": token_payload.get("iat", 0),
             "aud": token_payload.get("aud", []),
@@ -118,12 +124,14 @@ class HydraMiddleware(AuthMiddleware):
         if not is_m2m and "ext" in token_payload:
             ext_data = token_payload["ext"]
             if isinstance(ext_data, dict):
-                user_info.update({
-                    "username": ext_data.get("username"),
-                    "email": ext_data.get("email"),
-                    "name": ext_data.get("name"),
-                    "preferred_username": ext_data.get("preferred_username"),
-                })
+                user_info.update(
+                    {
+                        "username": ext_data.get("username"),
+                        "email": ext_data.get("email"),
+                        "name": ext_data.get("name"),
+                        "preferred_username": ext_data.get("preferred_username"),
+                    }
+                )
 
         logger.debug(f"Extracted user info for sub={user_info['sub']}, is_m2m={is_m2m}")
         return user_info
@@ -150,7 +158,11 @@ class HydraMiddleware(AuthMiddleware):
         signature_data = extract_signature_headers(dict(headers))
 
         if not signature_data:
-            return True, {"did_verified": False, "reason": "no_signature_headers"}, receive
+            return (
+                True,
+                {"did_verified": False, "reason": "no_signature_headers"},
+                receive,
+            )
 
         if signature_data["did"] != client_did:
             return False, {"did_verified": False, "reason": "did_mismatch"}, receive
@@ -162,8 +174,14 @@ class HydraMiddleware(AuthMiddleware):
         # Memory Safety Guard
         content_length = int(headers.get("content-length", 0))
         if content_length > self._max_body_size:
-            logger.warning(f"Payload too large for signature verification: {content_length} bytes")
-            return False, {"did_verified": False, "reason": "payload_too_large"}, receive
+            logger.warning(
+                f"Payload too large for signature verification: {content_length} bytes"
+            )
+            return (
+                False,
+                {"did_verified": False, "reason": "payload_too_large"},
+                receive,
+            )
 
         # Safely buffer the ASGI stream chunks
         body = b""
@@ -196,11 +214,13 @@ class HydraMiddleware(AuthMiddleware):
             "did_verified": is_valid,
             "did": client_did,
             "timestamp": signature_data.get("timestamp"),
-            "reason": None if is_valid else "invalid_signature"
+            "reason": None if is_valid else "invalid_signature",
         }
         return is_valid, verification_result, cached_receive
 
-    async def __call__(self, scope: dict[str, Any], receive: Callable, send: Callable) -> None:
+    async def __call__(
+        self, scope: dict[str, Any], receive: Callable, send: Callable
+    ) -> None:
         """Hydra-specific Pure ASGI pipeline overriding the base class."""
         if scope["type"] not in ("http", "websocket"):
             await self.app(scope, receive, send)
@@ -217,7 +237,10 @@ class HydraMiddleware(AuthMiddleware):
         token = self._extract_token(conn)
         if not token:
             from bindu.common.protocol.types import AuthenticationRequiredError
-            await self._send_error(scope, receive, send, AuthenticationRequiredError, 401)
+
+            await self._send_error(
+                scope, receive, send, AuthenticationRequiredError, 401
+            )
             return
 
         try:
@@ -233,6 +256,7 @@ class HydraMiddleware(AuthMiddleware):
         except Exception as e:
             logger.error(f"Failed to extract user info for {path}: {e}")
             from bindu.common.protocol.types import InvalidTokenError
+
             await self._send_error(scope, receive, send, InvalidTokenError, 401)
             return
 
@@ -259,7 +283,12 @@ class HydraMiddleware(AuthMiddleware):
         await self.app(scope, receive, send)
 
     async def _handle_validation_error(
-        self, error: Exception, path: str, scope: dict[str, Any], receive: Callable, send: Callable
+        self,
+        error: Exception,
+        path: str,
+        scope: dict[str, Any],
+        receive: Callable,
+        send: Callable,
     ) -> None:
         """Map raw exceptions to standard JSON-RPC error responses (Pure ASGI)."""
         error_str = str(error).lower()
@@ -275,7 +304,7 @@ class HydraMiddleware(AuthMiddleware):
                 data=str(error),
                 status=503,
             )
-            
+
             if scope["type"] == "websocket":
                 ws = WebSocket(scope, receive, send)
                 await ws.accept()
@@ -294,7 +323,7 @@ class HydraMiddleware(AuthMiddleware):
                 data=str(error),
                 status=401,
             )
-            
+
             if scope["type"] == "websocket":
                 ws = WebSocket(scope, receive, send)
                 await ws.accept()

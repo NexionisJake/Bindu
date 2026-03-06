@@ -13,7 +13,6 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable
 
 from starlette.requests import HTTPConnection
-from starlette.responses import JSONResponse
 from starlette.websockets import WebSocket
 
 from bindu.common.protocol.types import (
@@ -44,7 +43,7 @@ class AuthMiddleware(ABC):
         """
         self.app = app
         self.config = auth_config
-        
+
         # 1. Performance Optimization: Compile regex patterns on startup
         # instead of evaluating fnmatch on every incoming request.
         self._public_patterns = []
@@ -64,6 +63,7 @@ class AuthMiddleware(ABC):
     @abstractmethod
     def _validate_token(self, token: str) -> dict[str, Any]:
         """Validate authentication token.
+
         Can be synchronous or asynchronous.
         """
 
@@ -103,9 +103,10 @@ class AuthMiddleware(ABC):
 
     # Main ASGI Dispatch
 
-    async def __call__(self, scope: dict[str, Any], receive: Callable, send: Callable) -> None:
+    async def __call__(
+        self, scope: dict[str, Any], receive: Callable, send: Callable
+    ) -> None:
         """Pure ASGI implementation bypassing BaseHTTPMiddleware limitations."""
-        
         # We only care about HTTP and WebSocket connections
         if scope["type"] not in ("http", "websocket"):
             await self.app(scope, receive, send)
@@ -148,9 +149,7 @@ class AuthMiddleware(ABC):
             user_info = self._extract_user_info(token_payload)
         except Exception as e:
             logger.error(f"Failed to extract user info for {path}: {e}")
-            await self._send_error(
-                scope, receive, send, InvalidTokenError, 401
-            )
+            await self._send_error(scope, receive, send, InvalidTokenError, 401)
             return
 
         # Attach context to ASGI state
@@ -166,14 +165,22 @@ class AuthMiddleware(ABC):
     # Error handling and utilities
 
     async def _send_error(
-        self, scope: dict[str, Any], receive: Callable, send: Callable, error_type: Any, status: int, data: Any = None
+        self,
+        scope: dict[str, Any],
+        receive: Callable,
+        send: Callable,
+        error_type: Any,
+        status: int,
+        data: Any = None,
     ) -> None:
         """Send error response safely for both HTTP and WebSockets without parsing the body."""
         code, message = extract_error_fields(error_type)
-        
+
         # JSON-RPC 2.0 states ID must be null on parse/auth errors
         # This prevents the DoS vector of parsing massive unauthenticated bodies
-        response = jsonrpc_error(code=code, message=message, request_id=None, data=data, status=status)
+        response = jsonrpc_error(
+            code=code, message=message, request_id=None, data=data, status=status
+        )
 
         if scope["type"] == "websocket":
             # Safely reject unauthenticated websockets
@@ -184,7 +191,10 @@ class AuthMiddleware(ABC):
             await response(scope, receive, send)
 
     def _attach_user_context(
-        self, scope: dict[str, Any], user_info: dict[str, Any], token_payload: dict[str, Any]
+        self,
+        scope: dict[str, Any],
+        user_info: dict[str, Any],
+        token_payload: dict[str, Any],
     ) -> None:
         """Attach user context to ASGI state dictionary."""
         scope.setdefault("state", {})
@@ -193,7 +203,12 @@ class AuthMiddleware(ABC):
         scope["state"]["token_payload"] = token_payload
 
     async def _handle_validation_error(
-        self, error: Exception, path: str, scope: dict[str, Any], receive: Callable, send: Callable
+        self,
+        error: Exception,
+        path: str,
+        scope: dict[str, Any],
+        receive: Callable,
+        send: Callable,
     ) -> None:
         """Handle token validation errors with appropriate error responses."""
         error_str = str(error).lower()

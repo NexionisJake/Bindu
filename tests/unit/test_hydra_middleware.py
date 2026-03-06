@@ -38,6 +38,7 @@ def hydra_middleware(mock_app, mock_hydra_config):
 @pytest.fixture
 def make_asgi_scope():
     """Helper to create standard ASGI HTTP scopes."""
+
     def _make_scope(path="/", method="GET", headers=None, query_string=b""):
         return {
             "type": "http",
@@ -46,12 +47,14 @@ def make_asgi_scope():
             "query_string": query_string,
             "headers": headers or [],
         }
+
     return _make_scope
 
 
 @pytest.fixture
 def make_ws_scope():
     """Helper to create ASGI WebSocket scopes."""
+
     def _make_scope(path="/", headers=None, query_string=b""):
         return {
             "type": "websocket",
@@ -59,6 +62,7 @@ def make_ws_scope():
             "query_string": query_string,
             "headers": headers or [],
         }
+
     return _make_scope
 
 
@@ -86,15 +90,15 @@ async def test_missing_token_returns_401(hydra_middleware, mock_app, make_asgi_s
     await hydra_middleware(scope, receive, send)
 
     mock_app.assert_not_called()
-    
+
     # Assert JSON-RPC Error was sent
     assert send.call_count == 2
     response_start = send.call_args_list[0][0][0]
     response_body = send.call_args_list[1][0][0]
-    
+
     assert response_start["type"] == "http.response.start"
     assert response_start["status"] == 401
-    
+
     body = json.loads(response_body["body"].decode())
     assert "error" in body
     assert body["id"] is None  # DoS protection check
@@ -104,8 +108,7 @@ async def test_missing_token_returns_401(hydra_middleware, mock_app, make_asgi_s
 async def test_valid_token_allows_access(hydra_middleware, mock_app, make_asgi_scope):
     """Test that valid token allows access and attaches context."""
     scope = make_asgi_scope(
-        path="/api/protected",
-        headers=[(b"authorization", b"Bearer valid_token_123")]
+        path="/api/protected", headers=[(b"authorization", b"Bearer valid_token_123")]
     )
     receive = AsyncMock()
     send = AsyncMock()
@@ -127,7 +130,7 @@ async def test_valid_token_allows_access(hydra_middleware, mock_app, make_asgi_s
         await hydra_middleware(scope, receive, send)
 
         mock_app.assert_called_once_with(scope, receive, send)
-        
+
         # Verify user context was attached to the ASGI state
         assert "state" in scope
         assert scope["state"]["authenticated"] is True
@@ -140,7 +143,7 @@ async def test_websocket_token_extraction(hydra_middleware, mock_app, make_ws_sc
     # Simulate a websocket connection with a token in the subprotocol
     scope = make_ws_scope(
         path="/api/stream",
-        headers=[(b"sec-websocket-protocol", b"v1, bearer-ws_token_123")]
+        headers=[(b"sec-websocket-protocol", b"v1, bearer-ws_token_123")],
     )
     receive = AsyncMock()
     send = AsyncMock()
@@ -163,11 +166,12 @@ async def test_websocket_token_extraction(hydra_middleware, mock_app, make_ws_sc
 
 
 @pytest.mark.asyncio
-async def test_query_param_token_extraction(hydra_middleware, mock_app, make_asgi_scope):
+async def test_query_param_token_extraction(
+    hydra_middleware, mock_app, make_asgi_scope
+):
     """Test token extraction from URL query parameters as a fallback."""
     scope = make_asgi_scope(
-        path="/api/protected",
-        query_string=b"other=123&token=query_token_456"
+        path="/api/protected", query_string=b"other=123&token=query_token_456"
     )
     receive = AsyncMock()
     send = AsyncMock()
@@ -193,8 +197,7 @@ async def test_query_param_token_extraction(hydra_middleware, mock_app, make_asg
 async def test_inactive_token_returns_401(hydra_middleware, mock_app, make_asgi_scope):
     """Test that inactive token returns 401."""
     scope = make_asgi_scope(
-        path="/api/protected",
-        headers=[(b"authorization", b"Bearer inactive_token")]
+        path="/api/protected", headers=[(b"authorization", b"Bearer inactive_token")]
     )
     receive = AsyncMock()
     send = AsyncMock()
@@ -207,7 +210,7 @@ async def test_inactive_token_returns_401(hydra_middleware, mock_app, make_asgi_
         await hydra_middleware(scope, receive, send)
 
         mock_app.assert_not_called()
-        
+
         # Verify 401 response
         assert send.call_count == 2
         assert send.call_args_list[0][0][0]["status"] == 401
@@ -217,8 +220,7 @@ async def test_inactive_token_returns_401(hydra_middleware, mock_app, make_asgi_
 async def test_token_cache_hit(hydra_middleware, mock_app, make_asgi_scope):
     """Test that token cache prevents duplicate network calls."""
     scope = make_asgi_scope(
-        path="/api/protected",
-        headers=[(b"authorization", b"Bearer cached_token")]
+        path="/api/protected", headers=[(b"authorization", b"Bearer cached_token")]
     )
     receive = AsyncMock()
     send = AsyncMock()
@@ -250,6 +252,8 @@ def test_is_public_endpoint_regex(hydra_middleware):
     """Test that the pre-compiled regex correctly matches paths."""
     assert hydra_middleware._is_public_endpoint("/.well-known/agent.json") is True
     assert hydra_middleware._is_public_endpoint("/docs") is True
-    assert hydra_middleware._is_public_endpoint("/docs/api/v1") is True  # tests the /docs* glob
+    assert (
+        hydra_middleware._is_public_endpoint("/docs/api/v1") is True
+    )  # tests the /docs* glob
     assert hydra_middleware._is_public_endpoint("/") is False
     assert hydra_middleware._is_public_endpoint("/api/protected") is False
