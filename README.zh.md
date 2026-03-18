@@ -54,7 +54,7 @@
 Built with a distributed architecture (Task Manager, scheduler, storage), Bindu makes it fast to develop and easy to integrate with any AI framework. Transform any agent framework into a fully interoperable service for communication, collaboration, and commerce in the Internet of Agents.
 
 <p align="center">
-  <strong>🌟 <a href="https://bindus.directory">Register your agent</a> • 🌻 <a href="https://docs.getbindu.com">Documentation</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord Community</a></strong>
+  <strong>🌟 <a href="https://getbindu.com">注册您的代理</a> • 🌻 <a href="https://docs.getbindu.com">文档</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord 社区</a></strong>
 </p>
 
 
@@ -166,7 +166,7 @@ uvx cookiecutter https://github.com/getbindu/create-bindu-agent.git
 
 Your local agent becomes a live, secure, discoverable service. [Learn more →](https://docs.getbindu.com/bindu/create-bindu-agent/overview)
 
-> **💡 Pro Tip:** Agents created with cookiecutter include GitHub Actions that automatically register your agent in the [Bindu Directory](https://bindus.directory) when you push to your repository.
+> **💡 专业提示：** 使用 Cookiecutter 创建的代理包含 GitHub Actions，当您推送到仓库时会自动将代理注册到 [GetBindu.com](https://getbindu.com)。无需手动注册！
 
 ### Option 2: Manual Setup
 
@@ -468,19 +468,19 @@ Bindu includes a beautiful chat interface at `http://localhost:5173`. Navigate t
 
 <br/>
 
-## 🌐 Bindu Directory
+## 🌐 GetBindu.com
 
-The [**Bindu Directory**](https://bindus.directory) is a public registry of all Bindu agents, making them discoverable and accessible to the broader agent ecosystem.
+[**GetBindu.com**](https://getbindu.com) 是所有 Bindu 代理的公共注册表，使它们在更广泛的代理生态系统中可被发现和访问。
 
 ### ✨ Automatic Registration with Cookiecutter
 
 When you create an agent using the cookiecutter template, it includes a pre-configured GitHub Action that automatically registers your agent in the directory:
 
-1. **Create your agent** using cookiecutter
-2. **Push to GitHub** - The GitHub Action triggers automatically
-3. **Your agent appears** in the [Bindu Directory](https://bindus.directory)
+1. **使用 cookiecutter 创建您的代理**
+2. **推送到 GitHub** - GitHub Action 自动触发
+3. **您的代理出现**在 [GetBindu.com](https://getbindu.com) 中
 
-> **Note**: Collect your `BINDU_PAT_TOKEN` from [bindus.directory](https://bindus.directory) to register your agent.
+> **🔑 注意**：您需要从 getbindu.com 收集 BINDU_PAT_TOKEN 并使用它来注册您的代理。
 
 ### 📝 Manual Registration
 
@@ -530,6 +530,7 @@ NightSky enables swarms of agents. Each Bindu is a dot annotating agents with th
 
 Bindu is **framework-agnostic** and tested with:
 
+- **AG2**（原 AutoGen）
 - **Agno**
 - **CrewAI**
 - **LangChain**
@@ -691,13 +692,7 @@ Grateful to these projects:
 
 ## [We will make this agents bidufied and we do need your help.](https://www.notion.so/getbindu/305d3bb65095808eac2bf720368e9804?v=305d3bb6509580189941000cfad83ae7&source=copy_link)
 
----
-
-<br/>
-
-## 🎓 Workshops
-
-- [AI Native in Action: Agent Symphony](https://www.meetup.com/ai-native-amsterdam/events/311066899/) - [Slides](https://docs.google.com/presentation/d/1SqGXI0Gv_KCWZ1Mw2SOx_kI0u-LLxwZq7lMSONdl8oQ/edit)
+- [AI Native in Action: Agent Symphony](https://www.meetup.com/ai-native-Amsterdam && India/events/311066899/) - [幻灯片](https://docs.google.com/presentation/d/1SqGXI0Gv_KCWZ1Mw2SOx_kI0u-LLxwZq7lMSONdl8oQ/edit)
 
 ---
 

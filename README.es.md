@@ -51,7 +51,7 @@
 Construido con una arquitectura distribuida (Task Manager, scheduler, storage), Bindu agiliza el desarrollo y facilita la integración con cualquier framework de IA. Transforma cualquier framework de agentes en un servicio totalmente interoperable para la comunicación, colaboración y comercio en el Internet de los Agentes (Internet of Agents).
 
 <p align="center">
-<strong>🌟 <a href="[https://bindus.directory](https://bindus.directory)">Registra tu agente</a> • 🌻 <a href="[https://docs.getbindu.com](https://docs.getbindu.com)">Documentación</a> • 💬 <a href="[https://discord.gg/3w5zuYUuwt](https://discord.gg/3w5zuYUuwt)">Comunidad de Discord</a></strong>
+  <strong>🌟 <a href="https://getbindu.com">Registra tu agente</a> • 🌻 <a href="https://docs.getbindu.com">Documentación</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Comunidad Discord</a></strong>
 </p>
 
 -----
@@ -162,7 +162,7 @@ uvx cookiecutter https://github.com/getbindu/create-bindu-agent.git
 
 Tu agente local se convierte en un servicio en vivo, seguro y descubrible. [Más información →](https://docs.getbindu.com/bindu/create-bindu-agent/overview)
 
-> **💡 Consejo Pro:** Los agentes creados con cookiecutter incluyen GitHub Actions que registran automáticamente tu agente en el [Bindu Directory](https://bindus.directory) cuando haces push a tu repositorio.
+> **💡 Consejo profesional:** Los agentes creados con Cookiecutter incluyen GitHub Actions que registran automáticamente tu agente en el [GetBindu.com](https://getbindu.com) cuando haces push a tu repositorio. ¡No se necesita registro manual!
 
 ### Opción 2: Configuración Manual
 
@@ -454,26 +454,26 @@ Salida:
 Bindu incluye una hermosa interfaz de chat en `http://localhost:5173`. Navega a la carpeta `frontend` y ejecuta `npm run dev` para iniciar el servidor.
 
 <p align="center">
-<img src="assets/new-ui.png" alt="Bindu Agent UI" width="640" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="assets/new-ui.png" alt="Bindu Agent UI" width="640" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
 </p>
 
 -----
 
 <br>
 
-## 🌐 Directorio Bindu
+## 🌐 GetBindu.com
 
-El [**Bindu Directory**](https://bindus.directory) es un registro público de todos los agentes Bindu, haciéndolos descubribles y accesibles para el ecosistema de agentes en general.
+El [**GetBindu.com**](https://getbindu.com) es un registro público de todos los agentes Bindu, haciéndolos descubribles y accesibles para el ecosistema de agentes más amplio.
 
 ### ✨ Registro Automático con Cookiecutter
 
 Cuando creas un agente usando la plantilla de cookiecutter, se incluye una GitHub Action preconfigurada que registra automáticamente tu agente en el directorio:
 
-1.  **Crea tu agente** usando cookiecutter
-2.  **Haz Push a GitHub**: la GitHub Action se activa automáticamente
-3.  **Tu agente aparece** en el [Bindu Directory](https://bindus.directory)
+1. **Crea tu agente** usando cookiecutter
+2. **Haz push a GitHub** - La GitHub Action se activa automáticamente
+3. **Tu agente aparece** en el [GetBindu.com](https://getbindu.com)
 
-> **Nota**: Recoge tu `BINDU_PAT_TOKEN` de [bindus.directory](https://bindus.directory) para registrar tu agente.
+> **🔑 Nota**: Necesitas recopilar el BINDU_PAT_TOKEN de getbindu.com y usarlo para registrar tu agente.
 
 ### 📝 Registro Manual
 
@@ -523,12 +523,12 @@ NightSky permite enjambres de agentes. Cada Bindu es un punto que anota agentes 
 
 Bindu es **agnóstico al framework** y ha sido probado con:
 
-  - **AG2** (anteriormente AutoGen)
-  - **Agno**
-  - **CrewAI**
-  - **LangChain**
-  - **LlamaIndex**
-  - **FastAgent**
+- **AG2** (anteriormente AutoGen)
+- **Agno**
+- **CrewAI**
+- **LangChain**
+- **LlamaIndex**
+- **FastAgent**
 
 ¿Quieres integración con tu framework favorito? [¡Háznoslo saber en Discord](https://discord.gg/3w5zuYUuwt)\!
 
@@ -694,7 +694,7 @@ Agradecidos con estos proyectos:
 
 ## 🎓 Talleres
 
-  - [AI Native in Action: Agent Symphony](https://www.meetup.com/ai-native-amsterdam/events/311066899/) - [Slides](https://docs.google.com/presentation/d/1SqGXI0Gv_KCWZ1Mw2SOx_kI0u-LLxwZq7lMSONdl8oQ/edit)
+- [AI Native in Action: Agent Symphony](https://www.meetup.com/ai-native-Amsterdam && India/events/311066899/) - [Diapositivas](https://docs.google.com/presentation/d/1SqGXI0Gv_KCWZ1Mw2SOx_kI0u-LLxwZq7lMSONdl8oQ/edit)
 
 -----
 

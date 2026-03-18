@@ -54,7 +54,7 @@
 Built with a distributed architecture (Task Manager, scheduler, storage), Bindu makes it fast to develop and easy to integrate with any AI framework. Transform any agent framework into a fully interoperable service for communication, collaboration, and commerce in the Internet of Agents.
 
 <p align="center">
-  <strong>🌟 <a href="https://bindus.directory">Register your agent</a> • 🌻 <a href="https://docs.getbindu.com">Documentation</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord Community</a></strong>
+  <strong>🌟 <a href="https://getbindu.com">உங்கள் ஏஜென்ட்டைப் பதிவு செய்யுங்கள்</a> • 🌻 <a href="https://docs.getbindu.com">ஆவணங்கள்</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord சமூகம்</a></strong>
 </p>
 
 
@@ -468,23 +468,9 @@ Bindu includes a beautiful chat interface at `http://localhost:5173`. Navigate t
 
 <br/>
 
-## 🌐 Bindu Directory
+## 🌐 GetBindu.com
 
-The [**Bindu Directory**](https://bindus.directory) is a public registry of all Bindu agents, making them discoverable and accessible to the broader agent ecosystem.
-
-### ✨ Automatic Registration with Cookiecutter
-
-When you create an agent using the cookiecutter template, it includes a pre-configured GitHub Action that automatically registers your agent in the directory:
-
-1. **Create your agent** using cookiecutter
-2. **Push to GitHub** - The GitHub Action triggers automatically
-3. **Your agent appears** in the [Bindu Directory](https://bindus.directory)
-
-> **Note**: Collect your `BINDU_PAT_TOKEN` from [bindus.directory](https://bindus.directory) to register your agent.
-
-### 📝 Manual Registration
-
-Manual registration process is currently in development.
+[**GetBindu.com**](https://getbindu.com) என்பது அனைத்து Bindu ஏஜென்ட்களின் பொது பதிவேடு ஆகும், இது அவற்றை பரந்த ஏஜென்ட் சூழலியலில் கண்டுபிடிக்கக்கூடியதாகவும் அணுகக்கூடியதாகவும் ஆக்குகிறது.
 
 ---
 
@@ -530,6 +516,7 @@ NightSky enables swarms of agents. Each Bindu is a dot annotating agents with th
 
 Bindu is **framework-agnostic** and tested with:
 
+- **AG2** (முன்னர் AutoGen)
 - **Agno**
 - **CrewAI**
 - **LangChain**
@@ -710,7 +697,7 @@ Grateful to these projects:
 ---
 
 <p align="center">
-  <strong>Built with 💛 by the team from Amsterdam </strong><br/>
+  <strong>Amsterdam && India அணியால் 💛 உடன் கட்டமைக்கப்பட்டது</strong><br/>
   <em>Happy Bindu! 🌻🚀✨</em>
 </p>
 

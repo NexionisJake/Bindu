@@ -42,7 +42,7 @@
 </p>
 
 <p align="center">
-<em>"Wie Sonnenblumen, die sich dem Licht zuwenden, arbeiten Agenten in Schwärmen zusammen – jeder für sich unabhängig, und doch erschaffen sie gemeinsam etwas Größeres."</em>
+  <strong>🌟 <a href="https://getbindu.com">Registriere deinen Agenten</a> • 🌻 <a href="https://docs.getbindu.com">Dokumentation</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord Community</a></strong>
 </p>
 
 <br>
@@ -165,7 +165,7 @@ uvx cookiecutter https://github.com/getbindu/create-bindu-agent.git
 
 Ihr lokaler Agent wird zu einem Live-Dienst, der sicher und auffindbar ist. [Erfahren Sie mehr →](https://docs.getbindu.com/bindu/create-bindu-agent/overview)
 
-> **💡 Profi-Tipp:** Agenten, die mit cookiecutter erstellt wurden, enthalten GitHub Actions, die Ihren Agenten automatisch im [Bindu Directory](https://bindus.directory) registrieren, wenn Sie in Ihr Repository pushen.
+> **💡 Profi-Tipp:** Agenten, die mit Cookiecutter erstellt wurden, enthalten GitHub Actions, die deinen Agenten automatisch im [GetBindu.com](https://getbindu.com) registrieren, wenn du zu deinem Repository pushst. Keine manuelle Registrierung erforderlich!
 
 ### Option 2: Manuelle Einrichtung
 
@@ -457,26 +457,26 @@ Output:
 Bindu enthält eine ansprechende Chat-Benutzeroberfläche unter `http://localhost:5173`. Navigieren Sie zum Ordner `frontend` und führen Sie `npm run dev` aus, um den Server zu starten.
 
 <p align="center">
-<img src="assets/new-ui.png" alt="Bindu Agent UI" width="640" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="assets/new-ui.png" alt="Bindu Agent UI" width="640" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
 </p>
 
 -----
 
 <br>
 
-## 🌐 Bindu-Verzeichnis
+## 🌐 GetBindu.com
 
-Das [**Bindu-Verzeichnis**](https://bindus.directory) ist ein öffentliches Register aller Bindu-Agenten, das sie für das breitere Agenten-Ökosystem auffindbar und zugänglich macht.
+Das [**GetBindu.com**](https://getbindu.com) ist ein öffentliches Verzeichnis aller Bindu-Agenten, das sie für das breitere Agenten-Ökosystem entdeckbar und zugänglich macht.
 
 ### ✨ Automatische Registrierung mit Cookiecutter
 
 Wenn Sie einen Agenten mit der cookiecutter-Vorlage erstellen, enthält dieser eine vorkonfigurierte GitHub Action, die Ihren Agenten automatisch im Verzeichnis registriert:
 
-1.  **Erstellen Sie Ihren Agenten** mit cookiecutter
-2.  **Push zu GitHub** – Die GitHub Action wird automatisch ausgelöst
-3.  **Ihr Agent erscheint** im [Bindu-Verzeichnis](https://bindus.directory)
+1. **Erstelle deinen Agenten** mit Cookiecutter
+2. **Push zu GitHub** - Die GitHub Action wird automatisch ausgelöst
+3. **Dein Agent erscheint** im [GetBindu.com](https://getbindu.com)
 
-> **Hinweis**: Fordern Sie Ihr `BINDU_PAT_TOKEN` von [bindus.directory](https://bindus.directory) an, um Ihren Agenten zu registrieren.
+> **🔑 Hinweis**: Du musst das BINDU_PAT_TOKEN von getbindu.com sammeln und es verwenden, um deinen Agenten zu registrieren.
 
 ### 📝 Manuelle Registrierung
 
@@ -526,12 +526,12 @@ NightSky ermöglicht Schwärme von Agenten. Jedes Bindu ist ein Punkt, der Agent
 
 Bindu ist **framework-agnostisch** und wurde getestet mit:
 
-  - **AG2** (ehemals AutoGen)
-  - **Agno**
-  - **CrewAI**
-  - **LangChain**
-  - **LlamaIndex**
-  - **FastAgent**
+- **AG2** (ehemals AutoGen)
+- **Agno**
+- **CrewAI**
+- **LangChain**
+- **LlamaIndex**
+- **FastAgent**
 
 Möchten Sie eine Integration mit Ihrem Lieblings-Framework? [Lassen Sie es uns auf Discord wissen](https://discord.gg/3w5zuYUuwt)\!
 
@@ -697,7 +697,7 @@ Wir sind dankbar für diese Projekte:
 
 ## 🎓 Workshops
 
-  - [AI Native in Action: Agent Symphony](https://www.meetup.com/ai-native-amsterdam/events/311066899/) - [Folien (Slides)](https://docs.google.com/presentation/d/1SqGXI0Gv_KCWZ1Mw2SOx_kI0u-LLxwZq7lMSONdl8oQ/edit)
+- [AI Native in Action: Agent Symphony](https://www.meetup.com/ai-native-Amsterdam && India/events/311066899/) - [Folien](https://docs.google.com/presentation/d/1SqGXI0Gv_KCWZ1Mw2SOx_kI0u-LLxwZq7lMSONdl8oQ/edit)
 
 -----
 
@@ -710,8 +710,8 @@ Wir sind dankbar für diese Projekte:
 -----
 
 <p align="center">
-<strong>Mit 💛 entwickelt vom Team aus Amsterdam </strong><br>
-<em>Viel Spaß mit Bindu\! 🌻🚀✨</em>
+  <strong>Mit 💛 gebaut vom Team aus Amsterdam && India</strong><br/>
+  <em>Happy Bindu! 🌻🚀✨</em>
 </p>
 <p align="center">
 <strong>Von der Idee zum Internet der Agenten in 2 Minuten.</strong><br>
