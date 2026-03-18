@@ -30,7 +30,7 @@
 ডিস্ট্রিবিউটেড আর্কিটেকচার (Task Manager, scheduler, storage) দিয়ে তৈরি, Bindu দ্রুত ডেভেলপ করা এবং যেকোনো AI ফ্রেমওয়ার্কের সাথে ইন্টিগ্রেট করা সহজ করে তোলে। যেকোনো এজেন্ট ফ্রেমওয়ার্ককে Internet of Agents-এ যোগাযোগ, সহযোগিতা এবং কমার্সের জন্য সম্পূর্ণ ইন্টারঅপারেবল সার্ভিসে রূপান্তরিত করুন।
 
 <p align="center">
-  <strong>🌟 <a href="https://bindus.directory">আপনার এজেন্ট রেজিস্টার করুন</a> • 🌻 <a href="https://docs.getbindu.com">ডকুমেন্টেশন</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord কমিউনিটি</a></strong>
+  <strong>🌟 <a href="https://getbindu.com">আপনার এজেন্ট রেজিস্টার করুন</a> • 🌻 <a href="https://docs.getbindu.com">ডকুমেন্টেশন</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord কমিউনিটি</a></strong>
 </p>
 
 ---
@@ -140,7 +140,7 @@ uvx cookiecutter https://github.com/getbindu/create-bindu-agent.git
 
 ব্যস হয়ে গেল! আপনার লোকাল এজেন্ট এখন একটি লাইভ, সিকিউর এবং আবিষ্কারযোগ্য সার্ভিস। [আরো জানুন →](https://docs.getbindu.com/bindu/create-bindu-agent/overview)
 
-> **💡 প্রো টিপ:** Cookiecutter দিয়ে তৈরি এজেন্টে GitHub Actions থাকে যা আপনার রিপোজিটরিতে push করলে স্বয়ংক্রিয়ভাবে [Bindu Directory](https://bindus.directory)-তে এজেন্ট রেজিস্টার করে। ম্যানুয়াল রেজিস্ট্রেশনের দরকার নেই!
+> **💡 প্রো টিপ:** Cookiecutter দিয়ে তৈরি এজেন্টে GitHub Actions থাকে যা আপনার রিপোজিটরিতে push করলে স্বয়ংক্রিয়ভাবে [GetBindu.com](https://getbindu.com)-তে এজেন্ট রেজিস্টার করে। ম্যানুয়াল রেজিস্ট্রেশনের দরকার নেই!
 
 ### অপশন ২: ম্যানুয়াল সেটআপ
 
@@ -750,9 +750,9 @@ Bindu `http://localhost:3773/docs`-এ একটি সুন্দর chat inte
 
 <br/>
 
-## 🌐 Bindu Directory
+## 🌐 GetBindu.com
 
-[**Bindu Directory**](https://bindus.directory) হলো সব Bindu এজেন্টের একটি পাবলিক রেজিস্ট্রি, যা তাদের বৃহত্তর এজেন্ট ইকোসিস্টেমে আবিষ্কারযোগ্য এবং অ্যাক্সেসযোগ্য করে তোলে।
+[**GetBindu.com**](https://getbindu.com) হলো সব Bindu এজেন্টের একটি পাবলিক রেজিস্ট্রি, যা তাদের বৃহত্তর এজেন্ট ইকোসিস্টেমে আবিষ্কারযোগ্য এবং অ্যাক্সেসযোগ্য করে তোলে।
 
 ### ✨ Cookiecutter দিয়ে স্বয়ংক্রিয় রেজিস্ট্রেশন
 
@@ -760,9 +760,9 @@ Bindu `http://localhost:3773/docs`-এ একটি সুন্দর chat inte
 
 1. **আপনার এজেন্ট তৈরি করুন** cookiecutter ব্যবহার করে
 2. **GitHub-এ Push করুন** - GitHub Action স্বয়ংক্রিয়ভাবে ট্রিগার হয়
-3. **আপনার এজেন্ট দেখা যায়** [Bindu Directory](https://bindus.directory)-তে
+3. **আপনার এজেন্ট দেখা যায়** [GetBindu.com](https://getbindu.com)-তে
 
-> **🔑 নোট**: আপনাকে bindus.directory থেকে BINDU_PAT_TOKEN সংগ্রহ করতে হবে এবং আপনার এজেন্ট রেজিস্টার করতে এটি ব্যবহার করতে হবে।
+> **🔑 নোট**: আপনাকে getbindu.com থেকে BINDU_PAT_TOKEN সংগ্রহ করতে হবে এবং আপনার এজেন্ট রেজিস্টার করতে এটি ব্যবহার করতে হবে।
 
 ### 📝 ম্যানুয়াল রেজিস্ট্রেশন
 

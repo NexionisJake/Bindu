@@ -17,7 +17,7 @@
 	</div>
 	<div class="flex items-center gap-4">
 		<a
-			href="https://bindus.directory"
+			href="https://getbindu.com"
 			target="_blank"
 			class="text-gray-500 transition-colors hover:text-blue-500 dark:text-gray-400"
 			>Directory</a

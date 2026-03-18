@@ -30,7 +30,7 @@
 डिस्ट्रिब्यूटेड आर्किटेक्चर (Task Manager, scheduler, storage) के साथ बनाया गया, Bindu तेज़ी से डेवलप करना और किसी भी AI फ्रेमवर्क के साथ इंटीग्रेट करना आसान बनाता है। किसी भी एजेंट फ्रेमवर्क को Internet of Agents में संचार, सहयोग और कॉमर्स के लिए पूरी तरह से इंटरऑपरेबल सर्विस में बदल दें।
 
 <p align="center">
-  <strong>🌟 <a href="https://bindus.directory">अपना एजेंट रजिस्टर करें</a> • 🌻 <a href="https://docs.getbindu.com">डॉक्यूमेंटेशन</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord कम्युनिटी</a></strong>
+  <strong>🌟 <a href="https://getbindu.com">अपना एजेंट रजिस्टर करें</a> • 🌻 <a href="https://docs.getbindu.com">डॉक्यूमेंटेशन</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord कम्युनिटी</a></strong>
 </p>
 
 ---
@@ -141,7 +141,7 @@ uvx cookiecutter https://github.com/getbindu/create-bindu-agent.git
 
 बस हो गया! आपका लोकल एजेंट अब एक लाइव, सिक्योर और डिस्कवरेबल सर्विस है। [और जानें →](https://docs.getbindu.com/bindu/create-bindu-agent/overview)
 
-> **💡 प्रो टिप:** Cookiecutter से बनाए गए एजेंट्स में GitHub Actions होते हैं जो आपके रिपॉजिटरी में push करने पर स्वचालित रूप से [Bindu Directory](https://bindus.directory) में एजेंट को रजिस्टर कर देते हैं। मैनुअल रजिस्ट्रेशन की जरूरत नहीं!
+> **💡 प्रो टिप:** Cookiecutter से बनाए गए एजेंट्स में GitHub Actions होते हैं जो आपके रिपॉजिटरी में push करने पर स्वचालित रूप से [GetBindu.com](https://getbindu.com) में एजेंट को रजिस्टर कर देते हैं। मैनुअल रजिस्ट्रेशन की जरूरत नहीं!
 
 ### विकल्प 2: मैनुअल सेटअप
 
@@ -750,9 +750,9 @@ Bindu `http://localhost:3773/docs` पर एक सुंदर chat interface 
 
 <br/>
 
-## 🌐 Bindu Directory
+## 🌐 GetBindu.com
 
-[**Bindu Directory**](https://bindus.directory) सभी Bindu एजेंट्स की एक पब्लिक रजिस्ट्री है, जो उन्हें व्यापक एजेंट इकोसिस्टम में डिस्कवरेबल और एक्सेसिबल बनाती है।
+[**GetBindu.com**](https://getbindu.com) सभी Bindu एजेंट्स की एक पब्लिक रजिस्ट्री है, जो उन्हें व्यापक एजेंट इकोसिस्टम में डिस्कवरेबल और एक्सेसिबल बनाती है।
 
 ### ✨ Cookiecutter के साथ ऑटोमैटिक रजिस्ट्रेशन
 
@@ -760,9 +760,9 @@ Bindu `http://localhost:3773/docs` पर एक सुंदर chat interface 
 
 1. **अपना एजेंट बनाएं** cookiecutter का उपयोग करके
 2. **GitHub पर Push करें** - GitHub Action स्वचालित रूप से ट्रिगर होता है
-3. **आपका एजेंट दिखाई देता है** [Bindu Directory](https://bindus.directory) में
+3. **आपका एजेंट दिखाई देता है** [GetBindu.com](https://getbindu.com) में
 
-> **🔑 नोट**: आपको bindus.directory से BINDU_PAT_TOKEN एकत्र करना होगा और अपने एजेंट को रजिस्टर करने के लिए इसका उपयोग करना होगा।
+> **🔑 नोट**: आपको getbindu.com से BINDU_PAT_TOKEN एकत्र करना होगा और अपने एजेंट को रजिस्टर करने के लिए इसका उपयोग करना होगा।
 
 ### 📝 मैनुअल रजिस्ट्रेशन
 

@@ -54,7 +54,7 @@
 Built with a distributed architecture (Task Manager, scheduler, storage), Bindu makes it fast to develop and easy to integrate with any AI framework. Transform any agent framework into a fully interoperable service for communication, collaboration, and commerce in the Internet of Agents.
 
 <p align="center">
-  <strong>🌟 <a href="https://bindus.directory">Register your agent</a> • 🌻 <a href="https://docs.getbindu.com">Documentation</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord Community</a></strong>
+  <strong>🌟 <a href="https://getbindu.com">Register your agent</a> • 🌻 <a href="https://docs.getbindu.com">Documentation</a> • 💬 <a href="https://discord.gg/3w5zuYUuwt">Discord Community</a></strong>
 </p>
 
 
@@ -166,7 +166,7 @@ uvx cookiecutter https://github.com/getbindu/create-bindu-agent.git
 
 Your local agent becomes a live, secure, discoverable service. [Learn more →](https://docs.getbindu.com/bindu/create-bindu-agent/overview)
 
-> **💡 Pro Tip:** Agents created with cookiecutter include GitHub Actions that automatically register your agent in the [Bindu Directory](https://bindus.directory) when you push to your repository.
+> **💡 Pro Tip:** Agents created with cookiecutter include GitHub Actions that automatically register your agent in the [GetBindu.com](https://getbindu.com) when you push to your repository.
 
 ### Option 2: Manual Setup
 
@@ -468,9 +468,9 @@ Bindu includes a beautiful chat interface at `http://localhost:5173`. Navigate t
 
 <br/>
 
-## 🌐 Bindu Directory
+## 🌐 GetBindu.com
 
-The [**Bindu Directory**](https://bindus.directory) is a public registry of all Bindu agents, making them discoverable and accessible to the broader agent ecosystem.
+The [**GetBindu.com**](https://getbindu.com) is a public registry of all Bindu agents, making them discoverable and accessible to the broader agent ecosystem.
 
 ### ✨ Automatic Registration with Cookiecutter
 
@@ -478,9 +478,9 @@ When you create an agent using the cookiecutter template, it includes a pre-conf
 
 1. **Create your agent** using cookiecutter
 2. **Push to GitHub** - The GitHub Action triggers automatically
-3. **Your agent appears** in the [Bindu Directory](https://bindus.directory)
+3. **Your agent appears** in the [GetBindu.com](https://getbindu.com)
 
-> **Note**: Collect your `BINDU_PAT_TOKEN` from [bindus.directory](https://bindus.directory) to register your agent.
+> **Note**: Collect your `BINDU_PAT_TOKEN` from [getbindu.com](https://getbindu.com) to register your agent.
 
 ### 📝 Manual Registration
 
