@@ -627,9 +627,14 @@ class CapabilityCalculator:
             return DEFAULT_COST_SCORE
 
         try:
-            agent_cost = self._parse_cost_amount(
-                self._x402_extension.get("amount", "0")
-            )
+            # Handle both dict and object forms of x402_extension
+            if isinstance(self._x402_extension, dict):
+                agent_cost_str = self._x402_extension.get("amount", "0")
+            else:
+                # It's an object, try to get amount attribute
+                agent_cost_str = getattr(self._x402_extension, "amount", "0")
+            
+            agent_cost = self._parse_cost_amount(agent_cost_str)
             max_cost = self._parse_cost_amount(max_cost_amount)
 
             if max_cost <= 0:
@@ -640,7 +645,7 @@ class CapabilityCalculator:
                 return round(1.0 - (agent_cost / max_cost) * COST_DISCOUNT_FACTOR, 4)
             else:
                 return 0.0
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, AttributeError):
             return DEFAULT_COST_SCORE
 
     def _parse_cost_amount(self, amount: str | float | int) -> float:

@@ -552,8 +552,14 @@ class ManifestWorker(Worker):
             Metadata dict containing settlement information to attach to task
         """
         try:
-            payment_payload = payment_context["payment_payload"]
-            payment_requirements = payment_context["payment_requirements"]
+            from x402.types import PaymentPayload, PaymentRequirements
+            
+            payment_payload_dict = payment_context["payment_payload"]
+            payment_requirements_dict = payment_context["payment_requirements"]
+
+            # Convert dicts back to Pydantic models (they were serialized in a2a_protocol)
+            payment_payload = PaymentPayload.model_validate(payment_payload_dict)
+            payment_requirements = PaymentRequirements.model_validate(payment_requirements_dict)
 
             # Initialize facilitator client
             facilitator = FacilitatorClient(

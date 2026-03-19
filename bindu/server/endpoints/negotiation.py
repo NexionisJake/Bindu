@@ -29,7 +29,6 @@ from .utils import (
     create_response_with_x402,
     handle_endpoint_errors,
     get_client_ip,
-    validate_authentication,
     validate_manifest,
 )
 from bindu.utils.logging import get_logger
@@ -124,6 +123,7 @@ def _get_or_create_calculator(app: BinduApplication) -> CapabilityCalculator:
         app.manifest
         and hasattr(app.manifest, "negotiation")
         and app.manifest.negotiation
+        and isinstance(app.manifest.negotiation, dict)
     ):
         embedding_api_key = app.manifest.negotiation.get("embedding_api_key")
 
@@ -150,11 +150,6 @@ async def negotiation_endpoint(app: BinduApplication, request: Request) -> Respo
     """
     client_ip = get_client_ip(request)
     logger.debug(f"Negotiation request from {client_ip}")
-
-    # Authentication guard (protect negotiation when enabled)
-    auth_error = validate_authentication(request, client_ip, "negotiation")
-    if auth_error:
-        return auth_error
 
     # Early validation: manifest exists
     error_resp = validate_manifest(app)
