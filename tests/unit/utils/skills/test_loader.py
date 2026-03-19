@@ -20,19 +20,19 @@ class TestLoadSkillFromDirectory:
         """Test loading a valid skill from directory."""
         skill_dir = tmp_path / "test_skill"
         skill_dir.mkdir()
-        
+
         skill_data = {
             "name": "Test Skill",
             "description": "A test skill",
             "tags": ["test", "example"],
         }
-        
+
         skill_yaml = skill_dir / "skill.yaml"
         with open(skill_yaml, "w") as f:
             yaml.dump(skill_data, f)
-        
+
         skill = load_skill_from_directory(skill_dir, tmp_path)
-        
+
         assert skill["name"] == "Test Skill"
         assert skill["description"] == "A test skill"
         assert skill["tags"] == ["test", "example"]
@@ -41,19 +41,19 @@ class TestLoadSkillFromDirectory:
         """Test loading skill with relative path."""
         skill_dir = tmp_path / "skills" / "my_skill"
         skill_dir.mkdir(parents=True)
-        
+
         skill_data = {
             "name": "Relative Skill",
             "description": "Loaded via relative path",
         }
-        
+
         skill_yaml = skill_dir / "skill.yaml"
         with open(skill_yaml, "w") as f:
             yaml.dump(skill_data, f)
-        
+
         # Load with relative path
         skill = load_skill_from_directory("skills/my_skill", tmp_path)
-        
+
         assert skill["name"] == "Relative Skill"
 
     def test_load_skill_missing_directory(self, tmp_path):
@@ -65,7 +65,7 @@ class TestLoadSkillFromDirectory:
         """Test loading from directory without skill.yaml raises error."""
         skill_dir = tmp_path / "empty_skill"
         skill_dir.mkdir()
-        
+
         with pytest.raises(FileNotFoundError, match="skill.yaml not found"):
             load_skill_from_directory(skill_dir, tmp_path)
 
@@ -73,11 +73,11 @@ class TestLoadSkillFromDirectory:
         """Test loading invalid YAML raises error."""
         skill_dir = tmp_path / "bad_skill"
         skill_dir.mkdir()
-        
+
         skill_yaml = skill_dir / "skill.yaml"
         with open(skill_yaml, "w") as f:
             f.write("invalid: yaml: content: [")
-        
+
         with pytest.raises(ValueError, match="Invalid YAML"):
             load_skill_from_directory(skill_dir, tmp_path)
 
@@ -85,18 +85,18 @@ class TestLoadSkillFromDirectory:
         """Test that missing optional fields get defaults."""
         skill_dir = tmp_path / "minimal_skill"
         skill_dir.mkdir()
-        
+
         skill_data = {
             "name": "Minimal Skill",
             "description": "Minimal config",
         }
-        
+
         skill_yaml = skill_dir / "skill.yaml"
         with open(skill_yaml, "w") as f:
             yaml.dump(skill_data, f)
-        
+
         skill = load_skill_from_directory(skill_dir, tmp_path)
-        
+
         assert skill["id"] == "Minimal Skill"  # Defaults to name
         assert skill["tags"] == []
         assert skill["input_modes"] == ["text/plain"]
@@ -106,7 +106,7 @@ class TestLoadSkillFromDirectory:
         """Test loading skill with all optional fields."""
         skill_dir = tmp_path / "full_skill"
         skill_dir.mkdir()
-        
+
         skill_data = {
             "id": "custom-id",
             "name": "Full Skill",
@@ -119,13 +119,13 @@ class TestLoadSkillFromDirectory:
             "requirements": {"packages": ["req1", "req2"]},
             "performance": {"speed": "fast"},
         }
-        
+
         skill_yaml = skill_dir / "skill.yaml"
         with open(skill_yaml, "w") as f:
             yaml.dump(skill_data, f)
-        
+
         skill = load_skill_from_directory(skill_dir, tmp_path)
-        
+
         assert skill["id"] == "custom-id"
         assert skill["examples"] == ["Example 1", "Example 2"]
         assert skill["capabilities_detail"] == {"type": "detailed"}
@@ -136,15 +136,15 @@ class TestLoadSkillFromDirectory:
         """Test that skill stores documentation content."""
         skill_dir = tmp_path / "doc_skill"
         skill_dir.mkdir()
-        
+
         skill_data = {"name": "Doc Skill", "description": "Has docs"}
-        
+
         skill_yaml = skill_dir / "skill.yaml"
         with open(skill_yaml, "w") as f:
             yaml.dump(skill_data, f)
-        
+
         skill = load_skill_from_directory(skill_dir, tmp_path)
-        
+
         assert "documentation_content" in skill
         assert "name: Doc Skill" in skill["documentation_content"]
 
@@ -159,14 +159,14 @@ class TestLoadSkills:
         skill1_dir.mkdir()
         with open(skill1_dir / "skill.yaml", "w") as f:
             yaml.dump({"name": "Skill 1", "description": "First skill"}, f)
-        
+
         skill2_dir = tmp_path / "skill2"
         skill2_dir.mkdir()
         with open(skill2_dir / "skill.yaml", "w") as f:
             yaml.dump({"name": "Skill 2", "description": "Second skill"}, f)
-        
+
         skills = load_skills(["skill1", "skill2"], tmp_path)
-        
+
         assert len(skills) == 2
         assert skills[0]["name"] == "Skill 1"
         assert skills[1]["name"] == "Skill 2"
@@ -177,9 +177,9 @@ class TestLoadSkills:
             {"name": "Inline 1", "description": "First inline"},
             {"name": "Inline 2", "description": "Second inline", "tags": ["test"]},
         ]
-        
+
         skills = load_skills(inline_skills, tmp_path)  # type: ignore[arg-type]
-        
+
         assert len(skills) == 2
         assert skills[0]["name"] == "Inline 1"
         assert skills[1]["name"] == "Inline 2"
@@ -191,14 +191,14 @@ class TestLoadSkills:
         skill_dir.mkdir()
         with open(skill_dir / "skill.yaml", "w") as f:
             yaml.dump({"name": "File Skill", "description": "From file"}, f)
-        
+
         skills_config = [
             "file_skill",
             {"name": "Inline Skill", "description": "Inline def"},
         ]
-        
+
         skills = load_skills(skills_config, tmp_path)
-        
+
         assert len(skills) == 2
         assert skills[0]["name"] == "File Skill"
         assert skills[1]["name"] == "Inline Skill"
@@ -206,14 +206,14 @@ class TestLoadSkills:
     def test_load_inline_skill_missing_name(self, tmp_path):
         """Test that inline skill without name raises error."""
         inline_skills: list[dict[str, Any]] = [{"description": "No name"}]
-        
+
         with pytest.raises(ValueError, match="missing required 'name'"):
             load_skills(inline_skills, tmp_path)  # type: ignore[arg-type]
 
     def test_load_inline_skill_missing_description(self, tmp_path):
         """Test that inline skill without description raises error."""
         inline_skills: list[dict[str, Any]] = [{"name": "No Description"}]
-        
+
         with pytest.raises(ValueError, match="missing required 'description'"):
             load_skills(inline_skills, tmp_path)  # type: ignore[arg-type]
 
@@ -228,9 +228,9 @@ class TestLoadSkills:
                 "examples": ["ex1"],
             }
         ]
-        
+
         skills = load_skills(inline_skills, tmp_path)  # type: ignore[arg-type]
-        
+
         assert skills[0]["id"] == "custom-inline"
         assert skills[0]["examples"] == ["ex1"]
 
@@ -239,10 +239,10 @@ class TestLoadSkills:
         with patch("bindu.utils.skills.loader.logger") as mock_logger:
             # Invalid type (not str or dict)
             skills_config: Any = [123]
-            
+
             # Should log warning but not raise
             skills = load_skills(skills_config, tmp_path)  # type: ignore[arg-type]
-            
+
             assert len(skills) == 0
             mock_logger.warning.assert_called()
 
@@ -261,9 +261,9 @@ class TestFindSkillById:
             {"id": "skill-1", "name": "Skill 1"},
             {"id": "skill-2", "name": "Skill 2"},
         ]
-        
+
         skill = find_skill_by_id(skills, "skill-1")
-        
+
         assert skill is not None
         assert skill["name"] == "Skill 1"
 
@@ -273,22 +273,22 @@ class TestFindSkillById:
             {"id": "skill-1", "name": "Skill One"},
             {"id": "skill-2", "name": "Skill Two"},
         ]
-        
+
         skill = find_skill_by_id(skills, "Skill Two")
-        
+
         assert skill is not None
         assert skill["id"] == "skill-2"
 
     def test_find_skill_not_found(self):
         """Test that non-existent skill returns None."""
         skills = [{"id": "skill-1", "name": "Skill 1"}]
-        
+
         skill = find_skill_by_id(skills, "nonexistent")
-        
+
         assert skill is None
 
     def test_find_skill_empty_list(self):
         """Test finding in empty skill list."""
         skill = find_skill_by_id([], "any-id")
-        
+
         assert skill is None

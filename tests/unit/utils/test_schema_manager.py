@@ -44,7 +44,7 @@ class TestSanitizeDIDForSchema:
         # Create a DID longer than 63 characters
         long_did = "did:bindu:" + "a" * 100
         result = sanitize_did_for_schema(long_did)
-        
+
         assert len(result) == 63
         # Should contain hash suffix
         assert "_" in result
@@ -87,11 +87,11 @@ class TestCreateSchemaIfNotExists:
     async def test_create_new_schema(self):
         """Test creating a new schema that doesn't exist."""
         mock_conn = AsyncMock()
-        
+
         # Mock schema check - schema doesn't exist
         mock_check_result = MagicMock()
         mock_check_result.first.return_value = None
-        
+
         mock_conn.execute.side_effect = [mock_check_result, AsyncMock()]
         mock_conn.commit = AsyncMock()
 
@@ -105,11 +105,11 @@ class TestCreateSchemaIfNotExists:
     async def test_schema_already_exists(self):
         """Test when schema already exists."""
         mock_conn = AsyncMock()
-        
+
         # Mock schema check - schema exists
         mock_check_result = MagicMock()
         mock_check_result.first.return_value = MagicMock()
-        
+
         mock_conn.execute.return_value = mock_check_result
 
         result = await create_schema_if_not_exists(mock_conn, "existing_schema")
@@ -123,10 +123,10 @@ class TestCreateSchemaIfNotExists:
     async def test_create_schema_with_special_name(self):
         """Test creating schema with sanitized name."""
         mock_conn = AsyncMock()
-        
+
         mock_check_result = MagicMock()
         mock_check_result.first.return_value = None
-        
+
         mock_conn.execute.side_effect = [mock_check_result, AsyncMock()]
         mock_conn.commit = AsyncMock()
 
@@ -138,7 +138,7 @@ class TestCreateSchemaIfNotExists:
         create_call = mock_conn.execute.call_args_list[1]
         sql_arg = create_call[0][0]
         sql_text = str(sql_arg)
-        assert 'CREATE SCHEMA' in sql_text and 'did_bindu_alice_agent1' in sql_text
+        assert "CREATE SCHEMA" in sql_text and "did_bindu_alice_agent1" in sql_text
 
 
 class TestSetSearchPath:
@@ -193,15 +193,15 @@ class TestInitializeDIDSchema:
         """Test initializing a new schema with table creation."""
         mock_engine = MagicMock()
         mock_conn = AsyncMock()
-        
+
         # Mock schema creation
         mock_check_result = MagicMock()
         mock_check_result.first.return_value = None
-        
+
         mock_conn.execute.side_effect = [mock_check_result, AsyncMock(), AsyncMock()]
         mock_conn.commit = AsyncMock()
         mock_conn.run_sync = AsyncMock()
-        
+
         # Mock engine.begin() context manager
         mock_engine.begin.return_value.__aenter__.return_value = mock_conn
         mock_engine.begin.return_value.__aexit__.return_value = None
@@ -220,14 +220,14 @@ class TestInitializeDIDSchema:
         """Test initializing an existing schema with table creation."""
         mock_engine = MagicMock()
         mock_conn = AsyncMock()
-        
+
         # Mock schema already exists
         mock_check_result = MagicMock()
         mock_check_result.first.return_value = MagicMock()
-        
+
         mock_conn.execute.side_effect = [mock_check_result, AsyncMock()]
         mock_conn.run_sync = AsyncMock()
-        
+
         mock_engine.begin.return_value.__aenter__.return_value = mock_conn
         mock_engine.begin.return_value.__aexit__.return_value = None
 
@@ -244,13 +244,13 @@ class TestInitializeDIDSchema:
         """Test initializing schema without creating tables."""
         mock_engine = MagicMock()
         mock_conn = AsyncMock()
-        
+
         mock_check_result = MagicMock()
         mock_check_result.first.return_value = None
-        
+
         mock_conn.execute.side_effect = [mock_check_result, AsyncMock()]
         mock_conn.commit = AsyncMock()
-        
+
         mock_engine.begin.return_value.__aenter__.return_value = mock_conn
         mock_engine.begin.return_value.__aexit__.return_value = None
 
@@ -269,23 +269,25 @@ class TestInitializeDIDSchema:
         """Test full workflow with DID sanitization and schema creation."""
         mock_engine = MagicMock()
         mock_conn = AsyncMock()
-        
+
         # Sanitize DID
         did = "did:bindu:alice:agent1:abc123"
         schema_name = sanitize_did_for_schema(did)
-        
+
         # Mock schema creation
         mock_check_result = MagicMock()
         mock_check_result.first.return_value = None
-        
+
         mock_conn.execute.side_effect = [mock_check_result, AsyncMock(), AsyncMock()]
         mock_conn.commit = AsyncMock()
         mock_conn.run_sync = AsyncMock()
-        
+
         mock_engine.begin.return_value.__aenter__.return_value = mock_conn
         mock_engine.begin.return_value.__aexit__.return_value = None
 
-        result = await initialize_did_schema(mock_engine, schema_name, create_tables=True)
+        result = await initialize_did_schema(
+            mock_engine, schema_name, create_tables=True
+        )
 
         assert result == "did_bindu_alice_agent1_abc123"
         assert mock_engine.begin.call_count == 2
@@ -316,9 +318,9 @@ class TestIntegration:
     def test_hash_consistency(self):
         """Test that long DIDs produce consistent hashes."""
         long_did = "did:bindu:" + "a" * 100
-        
+
         result1 = sanitize_did_for_schema(long_did)
         result2 = sanitize_did_for_schema(long_did)
-        
+
         assert result1 == result2
         assert len(result1) == 63

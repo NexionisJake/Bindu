@@ -40,10 +40,7 @@ class TestPrepareServerDisplay:
         mock_console = MagicMock()
         mock_console_class.return_value = mock_console
 
-        prepare_server_display(
-            agent_id="test-agent",
-            agent_did="did:bindu:test"
-        )
+        prepare_server_display(agent_id="test-agent", agent_did="did:bindu:test")
 
         # Verify agent info is displayed
         calls = [str(call) for call in mock_console.print.call_args_list]
@@ -57,9 +54,7 @@ class TestPrepareServerDisplay:
         mock_console_class.return_value = mock_console
 
         prepare_server_display(
-            host="localhost",
-            port=3773,
-            tunnel_url="https://test.tunnel.getbindu.com"
+            host="localhost", port=3773, tunnel_url="https://test.tunnel.getbindu.com"
         )
 
         # Verify tunnel URL is displayed
@@ -72,10 +67,7 @@ class TestPrepareServerDisplay:
         mock_console = MagicMock()
         mock_console_class.return_value = mock_console
 
-        prepare_server_display(
-            client_id="test-client-id",
-            client_secret="test-secret"
-        )
+        prepare_server_display(client_id="test-client-id", client_secret="test-secret")
 
         # Verify OAuth info is displayed
         calls = [str(call) for call in mock_console.print.call_args_list]
@@ -95,7 +87,7 @@ class TestPrepareServerDisplay:
             agent_did="did:bindu:full",
             client_id="client-123",
             client_secret="secret-456",
-            tunnel_url="https://full.tunnel.com"
+            tunnel_url="https://full.tunnel.com",
         )
 
         # Should print all information
@@ -112,7 +104,9 @@ class TestPrepareServerDisplay:
         prepare_server_display()
 
         # Should attempt to reconfigure stdout
-        mock_stdout.reconfigure.assert_called_once_with(encoding="utf-8", errors="replace")
+        mock_stdout.reconfigure.assert_called_once_with(
+            encoding="utf-8", errors="replace"
+        )
 
     @patch("bindu.utils.display.Console")
     @patch("sys.stdout")
@@ -135,14 +129,15 @@ class TestPrepareServerDisplay:
         mock_console_class.return_value = mock_console
 
         prepare_server_display(
-            host="localhost",
-            port=3773,
-            tunnel_url="https://tunnel.example.com"
+            host="localhost", port=3773, tunnel_url="https://tunnel.example.com"
         )
 
         # Verify endpoints use tunnel URL
         calls = [str(call) for call in mock_console.print.call_args_list]
-        assert any("tunnel.example.com" in str(call) and "agent.json" in str(call) for call in calls)
+        assert any(
+            "tunnel.example.com" in str(call) and "agent.json" in str(call)
+            for call in calls
+        )
 
     @patch("bindu.utils.display.Console")
     def test_display_endpoints_without_tunnel(self, mock_console_class):
@@ -154,4 +149,7 @@ class TestPrepareServerDisplay:
 
         # Verify endpoints use local URL
         calls = [str(call) for call in mock_console.print.call_args_list]
-        assert any("localhost:3773" in str(call) and "agent.json" in str(call) for call in calls)
+        assert any(
+            "localhost:3773" in str(call) and "agent.json" in str(call)
+            for call in calls
+        )

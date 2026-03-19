@@ -11,8 +11,10 @@ class TestRetryDecorators:
     @pytest.mark.asyncio
     async def test_create_retry_decorator_storage(self):
         """Test creating storage retry decorator."""
-        decorator = create_retry_decorator("storage", max_attempts=3, min_wait=0.1, max_wait=1.0)
-        
+        decorator = create_retry_decorator(
+            "storage", max_attempts=3, min_wait=0.1, max_wait=1.0
+        )
+
         @decorator
         async def test_func():
             return "success"
@@ -23,8 +25,10 @@ class TestRetryDecorators:
     @pytest.mark.asyncio
     async def test_create_retry_decorator_worker(self):
         """Test creating worker retry decorator."""
-        decorator = create_retry_decorator("worker", max_attempts=3, min_wait=0.1, max_wait=1.0)
-        
+        decorator = create_retry_decorator(
+            "worker", max_attempts=3, min_wait=0.1, max_wait=1.0
+        )
+
         @decorator
         async def test_func():
             return "success"
@@ -35,8 +39,10 @@ class TestRetryDecorators:
     @pytest.mark.asyncio
     async def test_create_retry_decorator_api(self):
         """Test creating API retry decorator."""
-        decorator = create_retry_decorator("api", max_attempts=3, min_wait=0.1, max_wait=1.0)
-        
+        decorator = create_retry_decorator(
+            "api", max_attempts=3, min_wait=0.1, max_wait=1.0
+        )
+
         @decorator
         async def test_func(value):
             return value * 2

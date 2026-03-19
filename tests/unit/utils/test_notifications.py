@@ -25,23 +25,34 @@ class TestNotificationService:
     def test_validate_config_valid_http(self):
         """Test validating valid HTTP URL."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "http://example.com/webhook"})
+        config = cast(
+            PushNotificationConfig, {"id": uuid4(), "url": "http://example.com/webhook"}
+        )
 
-        with patch("socket.getaddrinfo", return_value=[("", "", "", "", ("93.184.216.34", 0))]):
+        with patch(
+            "socket.getaddrinfo", return_value=[("", "", "", "", ("93.184.216.34", 0))]
+        ):
             service.validate_config(config)
 
     def test_validate_config_valid_https(self):
         """Test validating valid HTTPS URL."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "https://example.com/webhook"})
+        config = cast(
+            PushNotificationConfig,
+            {"id": uuid4(), "url": "https://example.com/webhook"},
+        )
 
-        with patch("socket.getaddrinfo", return_value=[("", "", "", "", ("93.184.216.34", 0))]):
+        with patch(
+            "socket.getaddrinfo", return_value=[("", "", "", "", ("93.184.216.34", 0))]
+        ):
             service.validate_config(config)
 
     def test_validate_config_invalid_scheme(self):
         """Test validation rejects invalid URL scheme."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "ftp://example.com/webhook"})
+        config = cast(
+            PushNotificationConfig, {"id": uuid4(), "url": "ftp://example.com/webhook"}
+        )
 
         with pytest.raises(ValueError, match="must use http or https scheme"):
             service.validate_config(config)
@@ -57,43 +68,64 @@ class TestNotificationService:
     def test_validate_config_blocks_loopback(self):
         """Test validation blocks loopback addresses."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "http://localhost/webhook"})
+        config = cast(
+            PushNotificationConfig, {"id": uuid4(), "url": "http://localhost/webhook"}
+        )
 
-        with patch("socket.getaddrinfo", return_value=[("", "", "", "", ("127.0.0.1", 0))]):
+        with patch(
+            "socket.getaddrinfo", return_value=[("", "", "", "", ("127.0.0.1", 0))]
+        ):
             with pytest.raises(ValueError, match="blocked address range"):
                 service.validate_config(config)
 
     def test_validate_config_blocks_private_network(self):
         """Test validation blocks private network addresses."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "http://192.168.1.1/webhook"})
+        config = cast(
+            PushNotificationConfig, {"id": uuid4(), "url": "http://192.168.1.1/webhook"}
+        )
 
-        with patch("socket.getaddrinfo", return_value=[("", "", "", "", ("192.168.1.1", 0))]):
+        with patch(
+            "socket.getaddrinfo", return_value=[("", "", "", "", ("192.168.1.1", 0))]
+        ):
             with pytest.raises(ValueError, match="blocked address range"):
                 service.validate_config(config)
 
     def test_validate_config_blocks_link_local(self):
         """Test validation blocks link-local addresses."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "http://169.254.169.254/webhook"})
+        config = cast(
+            PushNotificationConfig,
+            {"id": uuid4(), "url": "http://169.254.169.254/webhook"},
+        )
 
-        with patch("socket.getaddrinfo", return_value=[("", "", "", "", ("169.254.169.254", 0))]):
+        with patch(
+            "socket.getaddrinfo",
+            return_value=[("", "", "", "", ("169.254.169.254", 0))],
+        ):
             with pytest.raises(ValueError, match="blocked address range"):
                 service.validate_config(config)
 
     def test_validate_config_hostname_resolution_fails(self):
         """Test validation handles hostname resolution failure."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "http://invalid.example/webhook"})
+        config = cast(
+            PushNotificationConfig,
+            {"id": uuid4(), "url": "http://invalid.example/webhook"},
+        )
 
-        with patch("socket.getaddrinfo", side_effect=socket.gaierror("Name resolution failed")):
+        with patch(
+            "socket.getaddrinfo", side_effect=socket.gaierror("Name resolution failed")
+        ):
             with pytest.raises(ValueError, match="could not be resolved"):
                 service.validate_config(config)
 
     def test_build_headers_basic(self):
         """Test building basic headers without token."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "http://example.com/webhook"})
+        config = cast(
+            PushNotificationConfig, {"id": uuid4(), "url": "http://example.com/webhook"}
+        )
 
         headers = service._build_headers(config)
 
@@ -103,11 +135,14 @@ class TestNotificationService:
     def test_build_headers_with_token(self):
         """Test building headers with authentication token."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {
-            "id": uuid4(),
-            "url": "http://example.com/webhook",
-            "token": "secret-token",
-        })
+        config = cast(
+            PushNotificationConfig,
+            {
+                "id": uuid4(),
+                "url": "http://example.com/webhook",
+                "token": "secret-token",
+            },
+        )
 
         headers = service._build_headers(config)
 
@@ -116,11 +151,14 @@ class TestNotificationService:
     def test_build_headers_with_authentication(self):
         """Test building headers with authentication dict."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {
-            "id": uuid4(),
-            "url": "http://example.com/webhook",
-            "authentication": {"type": "bearer"},
-        })
+        config = cast(
+            PushNotificationConfig,
+            {
+                "id": uuid4(),
+                "url": "http://example.com/webhook",
+                "authentication": {"type": "bearer"},
+            },
+        )
 
         headers = service._build_headers(config)
 
@@ -130,10 +168,14 @@ class TestNotificationService:
     async def test_send_event_success(self):
         """Test successfully sending an event."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "http://example.com/webhook"})
+        config = cast(
+            PushNotificationConfig, {"id": uuid4(), "url": "http://example.com/webhook"}
+        )
         event = {"kind": "status-update", "task_id": str(uuid4())}
 
-        with patch("socket.getaddrinfo", return_value=[("", "", "", "", ("93.184.216.34", 0))]):
+        with patch(
+            "socket.getaddrinfo", return_value=[("", "", "", "", ("93.184.216.34", 0))]
+        ):
             with patch.object(service, "_post_once", return_value=200):
                 await service.send_event(config, event)
 
@@ -143,11 +185,19 @@ class TestNotificationService:
     async def test_send_event_delivery_error(self):
         """Test handling delivery error."""
         service = NotificationService()
-        config = cast(PushNotificationConfig, {"id": uuid4(), "url": "http://example.com/webhook"})
+        config = cast(
+            PushNotificationConfig, {"id": uuid4(), "url": "http://example.com/webhook"}
+        )
         event = {"kind": "status-update", "task_id": str(uuid4())}
 
-        with patch("socket.getaddrinfo", return_value=[("", "", "", "", ("93.184.216.34", 0))]):
-            with patch.object(service, "_post_once", side_effect=NotificationDeliveryError(400, "Bad request")):
+        with patch(
+            "socket.getaddrinfo", return_value=[("", "", "", "", ("93.184.216.34", 0))]
+        ):
+            with patch.object(
+                service,
+                "_post_once",
+                side_effect=NotificationDeliveryError(400, "Bad request"),
+            ):
                 with pytest.raises(NotificationDeliveryError):
                     await service.send_event(config, event)
 

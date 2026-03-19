@@ -11,7 +11,11 @@ class TestMessageConverter:
 
     def test_to_chat_format_with_user_message(self):
         """Test converting user message to chat format."""
-        messages = [cast(Message, {"role": "user", "parts": [{"kind": "text", "text": "Hello"}]})]
+        messages = [
+            cast(
+                Message, {"role": "user", "parts": [{"kind": "text", "text": "Hello"}]}
+            )
+        ]
 
         result = MessageConverter.to_chat_format(messages)
 
@@ -21,7 +25,12 @@ class TestMessageConverter:
 
     def test_to_chat_format_with_agent_message(self):
         """Test converting agent message to assistant role."""
-        messages = [cast(Message, {"role": "agent", "parts": [{"kind": "text", "text": "Hi there"}]})]
+        messages = [
+            cast(
+                Message,
+                {"role": "agent", "parts": [{"kind": "text", "text": "Hi there"}]},
+            )
+        ]
 
         result = MessageConverter.to_chat_format(messages)
 
@@ -32,9 +41,18 @@ class TestMessageConverter:
     def test_to_chat_format_with_conversation(self):
         """Test converting conversation to chat format."""
         messages = [
-            cast(Message, {"role": "user", "parts": [{"kind": "text", "text": "Question?"}]}),
-            cast(Message, {"role": "agent", "parts": [{"kind": "text", "text": "Answer."}]}),
-            cast(Message, {"role": "user", "parts": [{"kind": "text", "text": "Follow-up?"}]}),
+            cast(
+                Message,
+                {"role": "user", "parts": [{"kind": "text", "text": "Question?"}]},
+            ),
+            cast(
+                Message,
+                {"role": "agent", "parts": [{"kind": "text", "text": "Answer."}]},
+            ),
+            cast(
+                Message,
+                {"role": "user", "parts": [{"kind": "text", "text": "Follow-up?"}]},
+            ),
         ]
 
         result = MessageConverter.to_chat_format(messages)
@@ -53,13 +71,16 @@ class TestMessageConverter:
     def test_to_chat_format_with_multiple_text_parts(self):
         """Test converting message with multiple text parts."""
         messages = [
-            cast(Message, {
-                "role": "user",
-                "parts": [
-                    {"kind": "text", "text": "Part 1"},
-                    {"kind": "text", "text": "Part 2"},
-                ],
-            })
+            cast(
+                Message,
+                {
+                    "role": "user",
+                    "parts": [
+                        {"kind": "text", "text": "Part 1"},
+                        {"kind": "text", "text": "Part 2"},
+                    ],
+                },
+            )
         ]
 
         result = MessageConverter.to_chat_format(messages)

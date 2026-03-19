@@ -29,6 +29,7 @@ def sample_task_id():
 def sample_message(sample_task_id, sample_context_id):
     """Sample message for task submission."""
     from bindu.common.protocol.types import TextPart
+
     return Message(
         message_id=uuid4(),
         task_id=sample_task_id,
@@ -55,7 +56,9 @@ class TestTaskOperations:
         assert task["history"][0] == sample_message
 
     @pytest.mark.asyncio
-    async def test_submit_task_adds_to_context(self, storage, sample_context_id, sample_message):
+    async def test_submit_task_adds_to_context(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test that submitting a task adds it to the context."""
         task_id = sample_message["task_id"]
         await storage.submit_task(sample_context_id, sample_message)
@@ -67,6 +70,7 @@ class TestTaskOperations:
     async def test_submit_task_with_string_task_id(self, storage, sample_context_id):
         """Test submitting task with string task_id (should convert to UUID)."""
         from bindu.common.protocol.types import TextPart
+
         task_id = uuid4()
         message = Message(
             message_id=uuid4(),
@@ -81,7 +85,9 @@ class TestTaskOperations:
         assert task["id"] == task_id
 
     @pytest.mark.asyncio
-    async def test_submit_task_normalizes_message_ids(self, storage, sample_context_id, sample_message):
+    async def test_submit_task_normalizes_message_ids(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test that message IDs are normalized to UUIDs."""
         message_id = uuid4()
         sample_message["message_id"] = str(message_id)
@@ -90,7 +96,9 @@ class TestTaskOperations:
         assert task["history"][0]["message_id"] == message_id
 
     @pytest.mark.asyncio
-    async def test_submit_task_normalizes_reference_task_ids(self, storage, sample_context_id, sample_message):
+    async def test_submit_task_normalizes_reference_task_ids(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test that reference_task_ids are normalized."""
         ref_id1, ref_id2 = uuid4(), uuid4()
         sample_message["reference_task_ids"] = [str(ref_id1), ref_id2]
@@ -102,9 +110,9 @@ class TestTaskOperations:
     async def test_clear_context(self, storage, sample_context_id, sample_message):
         """Test clearing a context."""
         await storage.submit_task(sample_context_id, sample_message)
-        
+
         await storage.clear_context(sample_context_id)
-        
+
         contexts = await storage.list_contexts()
         assert sample_context_id not in contexts
 
@@ -115,12 +123,12 @@ class TestTaskOperations:
         config = {
             "id": task_id,
             "url": "https://example.com/webhook",
-            "token": "secret"
+            "token": "secret",
         }
-        
+
         await storage.save_webhook_config(task_id, config)
         loaded = await storage.load_webhook_config(task_id)
-        
+
         assert loaded == config
 
     @pytest.mark.asyncio
@@ -128,10 +136,10 @@ class TestTaskOperations:
         """Test deleting webhook configuration."""
         task_id = uuid4()
         config = {"id": task_id, "url": "https://example.com/webhook"}
-        
+
         await storage.save_webhook_config(task_id, config)
         await storage.delete_webhook_config(task_id)
-        
+
         loaded = await storage.load_webhook_config(task_id)
         assert loaded is None
 
@@ -139,16 +147,16 @@ class TestTaskOperations:
     async def test_load_nonexistent_webhook_config(self, storage):
         """Test loading webhook config that doesn't exist."""
         task_id = uuid4()
-        
+
         loaded = await storage.load_webhook_config(task_id)
-        
+
         assert loaded is None
 
     @pytest.mark.asyncio
     async def test_delete_nonexistent_webhook_config(self, storage):
         """Test deleting webhook config that doesn't exist."""
         task_id = uuid4()
-        
+
         # Should not raise error
         await storage.delete_webhook_config(task_id)
 
@@ -156,14 +164,16 @@ class TestTaskOperations:
     async def test_list_contexts_empty(self, storage):
         """Test listing contexts when none exist."""
         contexts = await storage.list_contexts()
-        
+
         assert contexts == []
 
-
     @pytest.mark.asyncio
-    async def test_continue_non_terminal_task(self, storage, sample_context_id, sample_message):
+    async def test_continue_non_terminal_task(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test continuing an existing non-terminal task."""
         from bindu.common.protocol.types import TextPart
+
         task = await storage.submit_task(sample_context_id, sample_message)
         await storage.update_task(task["id"], "working")
 
@@ -183,9 +193,12 @@ class TestTaskOperations:
         assert continued_task["status"]["state"] == "submitted"
 
     @pytest.mark.asyncio
-    async def test_submit_terminal_task_raises_error(self, storage, sample_context_id, sample_message):
+    async def test_submit_terminal_task_raises_error(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test that continuing a terminal task raises ValueError."""
         from bindu.common.protocol.types import TextPart
+
         task = await storage.submit_task(sample_context_id, sample_message)
         await storage.update_task(task["id"], "completed")
 
@@ -212,7 +225,9 @@ class TestTaskOperations:
         assert loaded_task["context_id"] == sample_context_id
 
     @pytest.mark.asyncio
-    async def test_load_task_returns_deep_copy(self, storage, sample_context_id, sample_message):
+    async def test_load_task_returns_deep_copy(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test that load_task returns a deep copy to prevent mutations."""
         task = await storage.submit_task(sample_context_id, sample_message)
         loaded_task = await storage.load_task(task["id"])
@@ -223,9 +238,12 @@ class TestTaskOperations:
         assert len(reloaded_task["history"]) == 1
 
     @pytest.mark.asyncio
-    async def test_load_task_with_history_limit(self, storage, sample_context_id, sample_message):
+    async def test_load_task_with_history_limit(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test loading task with history length limit."""
         from bindu.common.protocol.types import TextPart
+
         task = await storage.submit_task(sample_context_id, sample_message)
 
         for i in range(5):
@@ -258,30 +276,36 @@ class TestTaskOperations:
         assert "timestamp" in updated_task["status"]
 
     @pytest.mark.asyncio
-    async def test_update_task_with_artifacts(self, storage, sample_context_id, sample_message):
+    async def test_update_task_with_artifacts(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test updating task with artifacts."""
         from bindu.common.protocol.types import TextPart
+
         task = await storage.submit_task(sample_context_id, sample_message)
         artifacts = [
             Artifact(
-                artifact_id=uuid4(),
-                parts=[TextPart(kind="text", text="Result 1")]
+                artifact_id=uuid4(), parts=[TextPart(kind="text", text="Result 1")]
             ),
             Artifact(
-                artifact_id=uuid4(),
-                parts=[TextPart(kind="text", text="Result 2")]
+                artifact_id=uuid4(), parts=[TextPart(kind="text", text="Result 2")]
             ),
         ]
 
-        updated_task = await storage.update_task(task["id"], "completed", new_artifacts=artifacts)
+        updated_task = await storage.update_task(
+            task["id"], "completed", new_artifacts=artifacts
+        )
 
         assert "artifacts" in updated_task
         assert len(updated_task["artifacts"]) == 2
 
     @pytest.mark.asyncio
-    async def test_update_task_with_messages(self, storage, sample_context_id, sample_message):
+    async def test_update_task_with_messages(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test updating task with new messages."""
         from bindu.common.protocol.types import TextPart
+
         task = await storage.submit_task(sample_context_id, sample_message)
         new_messages = [
             Message(
@@ -294,29 +318,39 @@ class TestTaskOperations:
             ),
         ]
 
-        updated_task = await storage.update_task(task["id"], "working", new_messages=new_messages)
+        updated_task = await storage.update_task(
+            task["id"], "working", new_messages=new_messages
+        )
 
         assert len(updated_task["history"]) == 2
         assert updated_task["history"][1]["task_id"] == task["id"]
         assert updated_task["history"][1]["context_id"] == sample_context_id
 
     @pytest.mark.asyncio
-    async def test_update_task_with_metadata(self, storage, sample_context_id, sample_message):
+    async def test_update_task_with_metadata(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test updating task with metadata."""
         task = await storage.submit_task(sample_context_id, sample_message)
         metadata = {"key1": "value1", "key2": "value2"}
 
-        updated_task = await storage.update_task(task["id"], "working", metadata=metadata)
+        updated_task = await storage.update_task(
+            task["id"], "working", metadata=metadata
+        )
 
         assert "metadata" in updated_task
         assert updated_task["metadata"]["key1"] == "value1"
 
     @pytest.mark.asyncio
-    async def test_update_task_merges_metadata(self, storage, sample_context_id, sample_message):
+    async def test_update_task_merges_metadata(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test that metadata updates are merged."""
         task = await storage.submit_task(sample_context_id, sample_message)
         await storage.update_task(task["id"], "working", metadata={"key1": "value1"})
-        updated_task = await storage.update_task(task["id"], "working", metadata={"key2": "value2"})
+        updated_task = await storage.update_task(
+            task["id"], "working", metadata={"key2": "value2"}
+        )
 
         assert updated_task["metadata"]["key1"] == "value1"
         assert updated_task["metadata"]["key2"] == "value2"
@@ -328,7 +362,9 @@ class TestTaskOperations:
             await storage.update_task(uuid4(), "working")
 
     @pytest.mark.asyncio
-    async def test_update_task_with_invalid_message_type_raises_error(self, storage, sample_context_id, sample_message):
+    async def test_update_task_with_invalid_message_type_raises_error(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test that invalid message type raises TypeError."""
         task = await storage.submit_task(sample_context_id, sample_message)
 
@@ -339,6 +375,7 @@ class TestTaskOperations:
     async def test_list_tasks(self, storage, sample_context_id):
         """Test listing all tasks."""
         from bindu.common.protocol.types import TextPart
+
         task_ids = [uuid4() for _ in range(3)]
         for task_id in task_ids:
             msg = Message(
@@ -358,6 +395,7 @@ class TestTaskOperations:
     async def test_list_tasks_with_limit(self, storage, sample_context_id):
         """Test listing tasks with length limit."""
         from bindu.common.protocol.types import TextPart
+
         for i in range(5):
             msg = Message(
                 message_id=uuid4(),
@@ -376,6 +414,7 @@ class TestTaskOperations:
     async def test_list_tasks_with_offset(self, storage, sample_context_id):
         """Test listing tasks with offset."""
         from bindu.common.protocol.types import TextPart
+
         for i in range(5):
             msg = Message(
                 message_id=uuid4(),
@@ -394,6 +433,7 @@ class TestTaskOperations:
     async def test_count_tasks(self, storage, sample_context_id):
         """Test counting all tasks."""
         from bindu.common.protocol.types import TextPart
+
         for i in range(3):
             msg = Message(
                 message_id=uuid4(),
@@ -412,6 +452,7 @@ class TestTaskOperations:
     async def test_count_tasks_by_status(self, storage, sample_context_id):
         """Test counting tasks filtered by status."""
         from bindu.common.protocol.types import TextPart
+
         for i in range(5):
             msg = Message(
                 message_id=uuid4(),
@@ -435,6 +476,7 @@ class TestTaskOperations:
     async def test_list_tasks_by_context(self, storage):
         """Test listing tasks by context."""
         from bindu.common.protocol.types import TextPart
+
         context1, context2 = uuid4(), uuid4()
 
         for i in range(3):
@@ -494,6 +536,7 @@ class TestContextOperations:
     async def test_append_to_contexts(self, storage, sample_context_id):
         """Test appending to contexts (deprecated but should not break)."""
         from bindu.common.protocol.types import TextPart
+
         messages = [
             Message(
                 message_id=uuid4(),
@@ -507,7 +550,9 @@ class TestContextOperations:
         await storage.append_to_contexts(sample_context_id, messages)
 
     @pytest.mark.asyncio
-    async def test_append_to_contexts_with_invalid_type_raises_error(self, storage, sample_context_id):
+    async def test_append_to_contexts_with_invalid_type_raises_error(
+        self, storage, sample_context_id
+    ):
         """Test that invalid messages type raises TypeError."""
         with pytest.raises(TypeError, match="messages must be list"):
             await storage.append_to_contexts(sample_context_id, "invalid")
@@ -516,6 +561,7 @@ class TestContextOperations:
     async def test_list_contexts(self, storage):
         """Test listing all contexts."""
         from bindu.common.protocol.types import TextPart
+
         contexts = [uuid4() for _ in range(3)]
         for ctx in contexts:
             msg = Message(
@@ -556,7 +602,9 @@ class TestFeedbackOperations:
     """Test feedback operations."""
 
     @pytest.mark.asyncio
-    async def test_store_task_feedback(self, storage, sample_context_id, sample_message):
+    async def test_store_task_feedback(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test storing task feedback."""
         task = await storage.submit_task(sample_context_id, sample_message)
         feedback = {"rating": 5, "comment": "Great!"}
@@ -567,7 +615,9 @@ class TestFeedbackOperations:
         assert storage.task_feedback[task["id"]][0] == feedback
 
     @pytest.mark.asyncio
-    async def test_store_multiple_feedback_entries(self, storage, sample_context_id, sample_message):
+    async def test_store_multiple_feedback_entries(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test storing multiple feedback entries for same task."""
         task = await storage.submit_task(sample_context_id, sample_message)
 
@@ -578,7 +628,9 @@ class TestFeedbackOperations:
         assert len(feedback_list) == 2
 
     @pytest.mark.asyncio
-    async def test_store_feedback_with_invalid_type_raises_error(self, storage, sample_context_id, sample_message):
+    async def test_store_feedback_with_invalid_type_raises_error(
+        self, storage, sample_context_id, sample_message
+    ):
         """Test that invalid feedback type raises TypeError."""
         task = await storage.submit_task(sample_context_id, sample_message)
 
@@ -649,8 +701,12 @@ class TestWebhookOperations:
     async def test_load_all_webhook_configs(self, storage):
         """Test loading all webhook configurations."""
         configs = {
-            uuid4(): PushNotificationConfig(id=uuid4(), url="https://example.com/webhook1"),
-            uuid4(): PushNotificationConfig(id=uuid4(), url="https://example.com/webhook2"),
+            uuid4(): PushNotificationConfig(
+                id=uuid4(), url="https://example.com/webhook1"
+            ),
+            uuid4(): PushNotificationConfig(
+                id=uuid4(), url="https://example.com/webhook2"
+            ),
         }
 
         for task_id, config in configs.items():
@@ -668,7 +724,9 @@ class TestUtilityOperations:
         """Test clearing all data."""
         task = await storage.submit_task(sample_context_id, sample_message)
         await storage.store_task_feedback(task["id"], {"rating": 5})
-        await storage.save_webhook_config(task["id"], PushNotificationConfig(id=uuid4(), url="https://example.com"))
+        await storage.save_webhook_config(
+            task["id"], PushNotificationConfig(id=uuid4(), url="https://example.com")
+        )
 
         await storage.clear_all()
 
@@ -703,9 +761,12 @@ class TestValidation:
             await storage.load_context("not-a-uuid")
 
     @pytest.mark.asyncio
-    async def test_submit_task_with_invalid_task_id_raises_error(self, storage, sample_context_id):
+    async def test_submit_task_with_invalid_task_id_raises_error(
+        self, storage, sample_context_id
+    ):
         """Test submitting task with invalid task_id raises TypeError."""
         from bindu.common.protocol.types import TextPart
+
         message = Message(
             message_id=uuid4(),
             task_id=12345,  # type: ignore

@@ -16,21 +16,21 @@ class TestPrepareAuthSettings:
     def test_prepare_auth_disabled(self):
         """Test when auth is disabled."""
         auth_config = {"enabled": False}
-        
+
         result = prepare_auth_settings(auth_config)
-        
+
         assert result is None
 
     def test_prepare_auth_not_configured(self):
         """Test when auth config is None."""
         result = prepare_auth_settings({})
-        
+
         assert result is None
 
     def test_prepare_auth_empty_config(self):
         """Test when auth config is empty."""
         result = prepare_auth_settings({})
-        
+
         assert result is None
 
     def test_prepare_auth_hydra_basic(self):
@@ -41,9 +41,9 @@ class TestPrepareAuthSettings:
             "admin_url": "http://localhost:4445",
             "public_url": "http://localhost:4444",
         }
-        
+
         result = prepare_auth_settings(auth_config)
-        
+
         assert result is not None
         assert result["auth"]["enabled"] is True
         assert result["auth"]["provider"] == "hydra"
@@ -59,9 +59,9 @@ class TestPrepareAuthSettings:
             "verify_ssl": False,
             "max_retries": 3,
         }
-        
+
         result = prepare_auth_settings(auth_config)
-        
+
         assert result is not None
         assert result["hydra"]["timeout"] == 30
         assert result["hydra"]["verify_ssl"] is False
@@ -75,9 +75,9 @@ class TestPrepareAuthSettings:
             "cache_ttl": 300,
             "max_cache_size": 1000,
         }
-        
+
         result = prepare_auth_settings(auth_config)
-        
+
         assert result is not None
         assert result["hydra"]["cache_ttl"] == 300
         assert result["hydra"]["max_cache_size"] == 1000
@@ -90,9 +90,9 @@ class TestPrepareAuthSettings:
             "auto_register_agents": True,
             "agent_client_prefix": "bindu-agent-",
         }
-        
+
         result = prepare_auth_settings(auth_config)
-        
+
         assert result is not None
         assert result["hydra"]["auto_register_agents"] is True
         assert result["hydra"]["agent_client_prefix"] == "bindu-agent-"
@@ -106,9 +106,9 @@ class TestPrepareAuthSettings:
             "timeout": None,
             "verify_ssl": None,
         }
-        
+
         result = prepare_auth_settings(auth_config)
-        
+
         assert result is not None
         assert "timeout" not in result["hydra"]
         assert "verify_ssl" not in result["hydra"]
@@ -120,9 +120,9 @@ class TestPrepareAuthSettings:
             "enabled": True,
             "provider": "unknown",
         }
-        
+
         result = prepare_auth_settings(auth_config)
-        
+
         assert result is not None
         assert result["auth"]["enabled"] is True
         assert result["auth"]["provider"] == "unknown"
@@ -134,9 +134,9 @@ class TestPrepareAuthSettings:
         auth_config = {
             "enabled": True,
         }
-        
+
         result = prepare_auth_settings(auth_config)
-        
+
         assert result is not None
         assert result["auth"]["provider"] == "hydra"
 
@@ -147,7 +147,7 @@ class TestPrepareVaultSettings:
     def test_prepare_vault_not_configured(self):
         """Test when vault is not configured."""
         result = prepare_vault_settings({})
-        
+
         # Empty dict returns None (not configured)
         assert result is None
 
@@ -155,7 +155,7 @@ class TestPrepareVaultSettings:
         """Test when vault config has only URL."""
         vault_config = {"url": "http://localhost:8200"}
         result = prepare_vault_settings(vault_config)
-        
+
         # Should return settings with vault config
         assert result is not None
         assert "vault" in result
@@ -168,9 +168,9 @@ class TestPrepareVaultSettings:
             "url": "http://localhost:8200",
             "token": "vault-token-123",
         }
-        
+
         result = prepare_vault_settings(vault_config)
-        
+
         assert result is not None
         assert result["vault"]["enabled"] is True
         assert result["vault"]["url"] == "http://localhost:8200"
@@ -183,9 +183,9 @@ class TestPrepareVaultSettings:
             "url": "http://localhost:8200",
             "token": None,
         }
-        
+
         result = prepare_vault_settings(vault_config)
-        
+
         assert result is not None
         assert "token" not in result["vault"]
         assert "url" in result["vault"]
@@ -196,9 +196,9 @@ class TestPrepareVaultSettings:
             "enabled": False,
             "url": "http://localhost:8200",
         }
-        
+
         result = prepare_vault_settings(vault_config)
-        
+
         assert result is not None
         assert result["vault"]["enabled"] is False
 
@@ -215,13 +215,13 @@ class TestUpdateAuthSettings:
             "admin_url": "http://localhost:4445",
             "public_url": "http://localhost:4444",
         }
-        
+
         update_auth_settings(auth_config)
-        
+
         # Verify auth settings were updated
         assert mock_app_settings.auth.enabled is True
         assert mock_app_settings.auth.provider == "hydra"
-        
+
         # Verify hydra settings were updated
         assert mock_app_settings.hydra.admin_url == "http://localhost:4445"
         assert mock_app_settings.hydra.public_url == "http://localhost:4444"
@@ -230,9 +230,9 @@ class TestUpdateAuthSettings:
     def test_update_auth_settings_disabled(self, mock_app_settings):
         """Test that disabled auth doesn't update settings."""
         auth_config = {"enabled": False}
-        
+
         update_auth_settings(auth_config)
-        
+
         # Should not have called setattr since auth is disabled
         # (prepare_auth_settings returns None)
 
@@ -240,7 +240,7 @@ class TestUpdateAuthSettings:
     def test_update_auth_settings_none(self, mock_app_settings):
         """Test that None config doesn't update settings."""
         update_auth_settings({})
-        
+
         # Should not raise error
 
 
@@ -255,9 +255,9 @@ class TestUpdateVaultSettings:
             "url": "http://localhost:8200",
             "token": "vault-token",
         }
-        
+
         update_vault_settings(vault_config)
-        
+
         # Verify vault settings were updated
         assert mock_app_settings.vault.enabled is True
         assert mock_app_settings.vault.url == "http://localhost:8200"
@@ -267,5 +267,5 @@ class TestUpdateVaultSettings:
     def test_update_vault_settings_none(self, mock_app_settings):
         """Test that None config doesn't update settings."""
         update_vault_settings({})
-        
+
         # Should not raise error
