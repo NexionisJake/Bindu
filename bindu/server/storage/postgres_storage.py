@@ -25,7 +25,6 @@ Features:
 
 from __future__ import annotations as _annotations
 
-import typing
 from typing import Any
 from uuid import UUID
 
@@ -33,7 +32,6 @@ from sqlalchemy import delete, func, select, update, cast
 from sqlalchemy.dialects.postgresql import insert, JSONB, JSON
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from typing_extensions import TypeVar
 
 from bindu.common.protocol.types import (
     Artifact,
@@ -65,10 +63,8 @@ from .schema import (
 
 logger = get_logger("bindu.server.storage.postgres_storage")
 
-ContextT = TypeVar("ContextT", default=Any)
 
-
-class PostgresStorage(Storage[ContextT]):
+class PostgresStorage(Storage[dict[str, Any]]):
     """PostgreSQL storage implementation using SQLAlchemy imperative mapping.
 
     Storage Structure:
@@ -144,6 +140,9 @@ class PostgresStorage(Storage[ContextT]):
             ConnectionError: If unable to connect to database
         """
         try:
+            # Type narrowing: database_url should be set
+            assert self.database_url is not None, "Database URL must be configured"
+
             masked_url = mask_database_url(self.database_url)
             logger.info("Connecting to PostgreSQL database with SQLAlchemy...")
 
@@ -231,6 +230,7 @@ class PostgresStorage(Storage[ContextT]):
         """
         # Return the session factory directly - search_path will be set
         # at the connection level via event listeners or within transactions
+        assert self._session_factory is not None, "Session factory not initialized"
         return self._session_factory()
 
     async def _retry_on_connection_error(self, func, *args, **kwargs):
@@ -466,7 +466,7 @@ class PostgresStorage(Storage[ContextT]):
                         raise KeyError(f"Task {task_id} not found")
 
                     now = get_current_utc_timestamp()
-                    update_values = {
+                    update_values: dict[str, Any] = {
                         "state": state,
                         "state_timestamp": now,
                         "updated_at": now,
@@ -636,7 +636,7 @@ class PostgresStorage(Storage[ContextT]):
 
         return await self._retry_on_connection_error(_load)
 
-    async def update_context(self, context_id: UUID, context: ContextT) -> None:
+    async def update_context(self, context_id: UUID, context: dict[str, Any]) -> None:
         """Store or update context using SQLAlchemy.
 
         Args:
@@ -721,15 +721,15 @@ class PostgresStorage(Storage[ContextT]):
 
     async def list_contexts(
         self, length: int | None = None, offset: int = 0
-    ) -> list[ContextT]:
+    ) -> list[dict[str, Any]]:
         """List all contexts using SQLAlchemy.
 
         Args:
-            length: Optional limit on number of contexts to return
+            length: Optional maximum number of contexts to return
             offset: Optional offset for pagination
 
         Returns:
-            List of strictly typed ContextT objects
+            List of context dicts
         """
         self._ensure_connected()
 
@@ -763,14 +763,11 @@ class PostgresStorage(Storage[ContextT]):
                 rows = result.fetchall()
 
                 return [
-                    typing.cast(
-                        ContextT,
-                        {
-                            "context_id": row.context_id,
-                            "task_count": row.task_count,
-                            "task_ids": row.task_ids,
-                        },
-                    )
+                    {
+                        "context_id": row.context_id,
+                        "task_count": row.task_count,
+                        "task_ids": row.task_ids,
+                    }
                     for row in rows
                 ]
 

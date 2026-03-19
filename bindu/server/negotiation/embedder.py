@@ -15,11 +15,11 @@ to enable semantic similarity matching during negotiation.
 
 from __future__ import annotations
 
-import httpx
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from bindu.settings import app_settings
+from bindu.utils.http import AsyncHTTPClient
 from bindu.utils.logging import get_logger
 
 if TYPE_CHECKING:
@@ -46,15 +46,16 @@ class SkillEmbedder:
         self._provider = app_settings.negotiation.embedding_provider
         self._client = None
 
-    def _get_client(self) -> httpx.AsyncClient:
+    def _get_client(self) -> AsyncHTTPClient:
         """Get or create async HTTP client.
 
-        Using ``httpx.AsyncClient`` (instead of the synchronous ``httpx.Client``)
-        prevents the OpenRouter HTTP call from blocking the event loop while the
-        ``/agent/negotiation`` endpoint awaits the response.
+        Using AsyncHTTPClient prevents the OpenRouter HTTP call from blocking
+        the event loop while the `/agent/negotiation` endpoint awaits the response.
         """
         if self._client is None:
-            self._client = httpx.AsyncClient(timeout=30.0)
+            self._client = AsyncHTTPClient(
+                base_url="https://openrouter.ai/api/v1", timeout=30
+            )
         return self._client
 
     async def _embed_with_openrouter(self, texts: list[str]) -> np.ndarray:
@@ -76,7 +77,7 @@ class SkillEmbedder:
 
         try:
             response = await client.post(
-                "https://openrouter.ai/api/v1/embeddings",
+                "/embeddings",
                 headers={
                     "Authorization": f"Bearer {self._api_key}",
                     "Content-Type": "application/json",
@@ -86,16 +87,12 @@ class SkillEmbedder:
                     "input": texts,
                 },
             )
-            response.raise_for_status()
-            data = response.json()
+            data = await response.json()
 
             # Extract embeddings from response
             embeddings = [item["embedding"] for item in data["data"]]
             return np.array(embeddings, dtype=np.float32)
 
-        except httpx.HTTPError as e:
-            logger.error(f"OpenRouter API error: {e}")
-            raise
         except Exception as e:
             logger.error(f"Failed to get embeddings from OpenRouter: {e}")
             raise

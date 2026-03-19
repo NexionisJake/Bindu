@@ -22,11 +22,10 @@ from starlette.websockets import WebSocket
 
 from bindu.auth.hydra.client import HydraClient
 from bindu.utils.logging import get_logger
-from bindu.utils.request_utils import extract_error_fields, jsonrpc_error
-from bindu.utils.did_signature import (
+from bindu.server.endpoints.utils import extract_error_fields, jsonrpc_error
+from bindu.utils.did import (
     extract_signature_headers,
     verify_signature,
-    get_public_key_from_hydra,
 )
 
 from .base import AuthMiddleware
@@ -167,7 +166,7 @@ class HydraMiddleware(AuthMiddleware):
         if signature_data["did"] != client_did:
             return False, {"did_verified": False, "reason": "did_mismatch"}, receive
 
-        public_key = await get_public_key_from_hydra(client_did, self.hydra_client)
+        public_key = await self.hydra_client.get_public_key_from_client(client_did)
         if not public_key:
             return True, {"did_verified": False, "reason": "no_public_key"}, receive
 

@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from collections import defaultdict
 from threading import Lock
-from typing import cast
 
 from bindu.utils.logging import get_logger
 
@@ -308,4 +307,4 @@ def get_metrics() -> PrometheusMetrics:
         with _metrics_init_lock:
             if _metrics_instance is None:
                 _metrics_instance = PrometheusMetrics()
-    return cast(PrometheusMetrics, _metrics_instance)
+    return _metrics_instance

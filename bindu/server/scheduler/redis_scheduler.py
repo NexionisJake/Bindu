@@ -5,7 +5,7 @@ from __future__ import annotations as _annotations
 import json
 import asyncio
 from collections.abc import AsyncIterator
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 import redis.asyncio as redis
@@ -169,8 +169,12 @@ class RedisScheduler(Scheduler):
 
         while True:
             try:
-                result = await self._redis_client.blpop(
-                    self.queue_name, timeout=self.poll_timeout
+                # Cast to awaitable since we're using async redis client
+                result = await cast(
+                    Any,
+                    self._redis_client.blpop(
+                        [self.queue_name], timeout=self.poll_timeout
+                    ),
                 )
 
                 if result:
@@ -201,7 +205,8 @@ class RedisScheduler(Scheduler):
 
         try:
             serialized_task = self._serialize_task_operation(task_operation)
-            await self._redis_client.rpush(self.queue_name, serialized_task)
+            # Cast to awaitable since we're using async redis client
+            await cast(Any, self._redis_client.rpush(self.queue_name, serialized_task))
             logger.debug(
                 f"Pushed task operation to queue: {task_operation['operation']}"
             )
@@ -272,7 +277,8 @@ class RedisScheduler(Scheduler):
         """
         if not self._redis_client:
             raise RuntimeError("Redis client not initialized.")
-        return await self._redis_client.llen(self.queue_name)
+        # Cast to awaitable since we're using async redis client
+        return await cast(Any, self._redis_client.llen(self.queue_name))
 
     async def clear_queue(self) -> int:
         """Clear all tasks from the queue.
@@ -296,7 +302,8 @@ class RedisScheduler(Scheduler):
         try:
             if not self._redis_client:
                 return False
-            await self._redis_client.ping()
+            # Cast to awaitable since we're using async redis client
+            await cast(Any, self._redis_client.ping())
             return True
         except (redis.RedisError, ConnectionError, TimeoutError, Exception) as e:
             logger.warning(f"Redis health check failed: {e}")

@@ -49,7 +49,7 @@ from bindu.server.workers.base import Worker
 from bindu.server.workers.helpers import ResponseDetector, ResultProcessor
 from bindu.utils.logging import get_logger
 from bindu.utils.retry import retry_worker_operation
-from bindu.utils.worker_utils import ArtifactBuilder, MessageConverter, TaskStateManager
+from bindu.utils.worker import ArtifactBuilder, MessageConverter, TaskStateManager
 
 tracer = get_tracer("bindu.server.workers.manifest_worker")
 logger = get_logger("bindu.server.workers.manifest_worker")
@@ -164,6 +164,8 @@ class ManifestWorker(Worker):
                 )
 
                 try:
+                    # Type narrowing: manifest.run should be callable
+                    assert self.manifest.run is not None
                     # Pass message history as structured list of dicts
                     raw_results = self.manifest.run(message_history or [])
 
@@ -362,7 +364,7 @@ class ManifestWorker(Worker):
     # -------------------------------------------------------------------------
 
     async def _handle_intermediate_state(
-        self, task: dict[str, Any], state: TaskState, message_content: Any
+        self, task: Task, state: TaskState, message_content: Any
     ) -> None:
         """Handle intermediate task states (input-required, auth-required).
 
@@ -396,7 +398,7 @@ class ManifestWorker(Worker):
 
     async def _handle_terminal_state(
         self,
-        task: dict[str, Any],
+        task: Task,
         results: Any,
         state: TaskState = "completed",
         additional_metadata: dict[str, Any] | None = None,
@@ -486,7 +488,7 @@ class ManifestWorker(Worker):
             await self.storage.update_task(task["id"], state=state)
             await self._notify_lifecycle(task["id"], task["context_id"], state, True)
 
-    async def _handle_task_failure(self, task: dict[str, Any], error: str) -> None:
+    async def _handle_task_failure(self, task: Task, error: str) -> None:
         """Handle task execution failure.
 
         Creates an error message and marks task as failed without artifacts.

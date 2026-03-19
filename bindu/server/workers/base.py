@@ -28,6 +28,8 @@ from typing import Any, AsyncIterator
 import anyio
 from opentelemetry.trace import get_tracer, use_span
 
+from bindu.server.scheduler import TaskOperation
+
 from bindu.common.protocol.types import Artifact, Message, TaskIdParams, TaskSendParams
 from bindu.server.scheduler.base import Scheduler
 from bindu.server.storage.base import Storage
@@ -100,7 +102,7 @@ class Worker(ABC):
         async for task_operation in self.scheduler.receive_task_operations():
             await self._handle_task_operation(task_operation)
 
-    async def _handle_task_operation(self, task_operation: dict[str, Any]) -> None:
+    async def _handle_task_operation(self, task_operation: TaskOperation) -> None:
         """Dispatch task operation to appropriate handler.
 
         Args:

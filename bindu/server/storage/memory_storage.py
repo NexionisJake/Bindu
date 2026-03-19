@@ -18,10 +18,8 @@ from __future__ import annotations as _annotations
 
 import copy
 from datetime import datetime, timezone
-from typing import Any, cast
+from typing import Any
 from uuid import UUID
-
-from typing_extensions import TypeVar
 
 from bindu.common.protocol.types import (
     Artifact,
@@ -39,10 +37,8 @@ from .base import Storage
 
 logger = get_logger("bindu.server.storage.memory_storage")
 
-ContextT = TypeVar("ContextT", default=Any)
 
-
-class InMemoryStorage(Storage[ContextT]):
+class InMemoryStorage(Storage[dict[str, Any]]):
     """In-memory storage implementation for tasks and contexts.
 
     Storage Structure:
@@ -82,7 +78,7 @@ class InMemoryStorage(Storage[ContextT]):
             return None
 
         # Always return a deep copy to prevent mutations affecting stored task
-        task_copy = cast(Task, copy.deepcopy(task))
+        task_copy = copy.deepcopy(task)
 
         # Limit history if requested
         if history_length is not None and history_length > 0 and "history" in task:
@@ -270,7 +266,7 @@ class InMemoryStorage(Storage[ContextT]):
 
         return task
 
-    async def update_context(self, context_id: UUID, context: ContextT) -> None:
+    async def update_context(self, context_id: UUID, context: dict[str, Any]) -> None:
         """Store or update context metadata.
 
         Note: This stores additional context metadata. Task associations are
@@ -289,7 +285,7 @@ class InMemoryStorage(Storage[ContextT]):
         # Note: This method is kept for backward compatibility but contexts
         # are now primarily managed as task lists
 
-    async def load_context(self, context_id: UUID) -> list[UUID] | None:
+    async def load_context(self, context_id: UUID) -> dict[str, Any] | None:
         """Load context task list from storage.
 
         Args:
@@ -304,7 +300,11 @@ class InMemoryStorage(Storage[ContextT]):
         if not isinstance(context_id, UUID):
             raise TypeError(f"context_id must be UUID, got {type(context_id).__name__}")
 
-        return self.contexts.get(context_id)
+        task_list = self.contexts.get(context_id)
+        if task_list is None:
+            return None
+        # Wrap task list in dict to match expected return type
+        return {"task_ids": task_list}
 
     async def append_to_contexts(
         self, context_id: UUID, messages: list[Message]
@@ -404,25 +404,22 @@ class InMemoryStorage(Storage[ContextT]):
 
     async def list_contexts(
         self, length: int | None = None, offset: int = 0
-    ) -> list[ContextT]:
+    ) -> list[dict[str, Any]]:
         """List all contexts in storage.
 
         Args:
-            length: Optional limit on number of contexts to return
+            length: Optional maximum number of contexts to return
             offset: Optional offset for pagination
 
         Returns:
-            List of typed ContextT objects
+            List of context dicts
         """
         contexts = [
-            cast(
-                ContextT,
-                {
-                    "context_id": ctx_id,
-                    "task_count": len(task_ids),
-                    "task_ids": task_ids,
-                },
-            )
+            {
+                "context_id": ctx_id,
+                "task_count": len(task_ids),
+                "task_ids": task_ids,
+            }
             for ctx_id, task_ids in self.contexts.items()
         ]
 

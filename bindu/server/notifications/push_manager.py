@@ -26,6 +26,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, cast
+from uuid import UUID
 
 from bindu.common.protocol.types import (
     Artifact,
@@ -372,7 +373,11 @@ class PushNotificationManager:
         )
 
     def _create_error_response(
-        self, response_class: type, request_id: str, error_class: type, message: str
+        self,
+        response_class: type,
+        request_id: UUID | str,
+        error_class: type,
+        message: str,
     ) -> Any:
         """Create a standardized error response."""
         return response_class(

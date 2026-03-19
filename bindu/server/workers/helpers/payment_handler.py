@@ -16,7 +16,7 @@ from bindu.extensions.x402.utils import (
     build_payment_failed_metadata,
 )
 from bindu.utils.logging import get_logger
-from bindu.utils.worker_utils import MessageConverter
+from bindu.utils.worker import MessageConverter
 
 logger = get_logger("bindu.server.workers.helpers.payment_handler")
 
@@ -46,7 +46,7 @@ class PaymentHandler:
             return None
         try:
             if hasattr(PaymentPayload, "model_validate"):
-                return PaymentPayload.model_validate(data)  # type: ignore
+                return PaymentPayload.model_validate(data)
             return PaymentPayload(**data)
         except Exception as e:
             logger.warning(
@@ -72,7 +72,7 @@ class PaymentHandler:
             return None
         try:
             if hasattr(PaymentRequirements, "model_validate"):
-                return PaymentRequirements.model_validate(data)  # type: ignore
+                return PaymentRequirements.model_validate(data)
             return PaymentRequirements(**data)
         except Exception as e:
             logger.warning(
