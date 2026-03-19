@@ -27,6 +27,11 @@ if TYPE_CHECKING:
 
 logger = get_logger("bindu.server.negotiation.embedder")
 
+# Constants
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1"
+EMBEDDING_REQUEST_TIMEOUT_SECONDS = 30
+MAX_TASK_EMBEDDING_CACHE_SIZE = 1000
+
 
 class SkillEmbedder:
     """Lazy-loading embedder for semantic skill matching.
@@ -54,7 +59,7 @@ class SkillEmbedder:
         """
         if self._client is None:
             self._client = AsyncHTTPClient(
-                base_url="https://openrouter.ai/api/v1", timeout=30
+                base_url=OPENROUTER_API_URL, timeout=EMBEDDING_REQUEST_TIMEOUT_SECONDS
             )
         return self._client
 
@@ -124,16 +129,12 @@ class SkillEmbedder:
         # Route to appropriate provider
         if self._provider == "openrouter":
             return await self._embed_with_openrouter(texts)
-        elif self._provider == "sentence-transformers":
-            logger.warning(
-                f"Unknown embedding provider: {self._provider}, falling back to OpenRouter"
-            )
-            return await self._embed_with_openrouter(texts)
-            # return await self._embed_with_sentence_transformers(texts)
         else:
-            logger.warning(
-                f"Unknown embedding provider: {self._provider}, falling back to OpenRouter"
-            )
+            # Fallback to OpenRouter for unknown providers
+            if self._provider != "openrouter":
+                logger.warning(
+                    f"Unknown embedding provider: {self._provider}, falling back to OpenRouter"
+                )
             return await self._embed_with_openrouter(texts)
 
     async def compute_skill_embeddings(
@@ -246,8 +247,8 @@ class SkillEmbedder:
 
         if text not in self._task_embedding_cache:
             self._task_embedding_cache[text] = await self.embed_text(text)
-            # Evict oldest entry when cache exceeds 1000 items
-            if len(self._task_embedding_cache) > 1000:
+            # Evict oldest entry when cache exceeds limit
+            if len(self._task_embedding_cache) > MAX_TASK_EMBEDDING_CACHE_SIZE:
                 oldest = next(iter(self._task_embedding_cache))
                 del self._task_embedding_cache[oldest]
 
