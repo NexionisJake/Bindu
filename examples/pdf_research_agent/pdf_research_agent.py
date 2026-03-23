@@ -9,11 +9,11 @@ a live service.
 
 Prerequisites
 -------------
-    uv add bindu agno openai pypdf
+    uv add bindu agno pypdf python-dotenv
 
 Usage
 -----
-    export OPENAI_API_KEY="sk-..."
+    export OPENROUTER_API_KEY="your_api_key_here"
     python pdf_research_agent.py
 
 The agent will be live at http://localhost:3775
@@ -21,13 +21,12 @@ Send it a message like:
     {"role": "user", "content": "/path/to/paper.pdf"}
 or paste raw text directly as the message content.
 """
-
-import os
-
-from agno.agent import Agent
-from agno.models.ollama import Ollama
-
 from bindu.penguin.bindufy import bindufy
+from agno.agent import Agent
+from agno.models.openrouter import OpenRouter
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 # ---------------------------------------------------------------------------
 # 1. Helper — extract text from a PDF path or pass raw text straight through
@@ -62,7 +61,10 @@ agent = Agent(
         "  3. Note any important conclusions or recommendations.\n"
         "Be factual and brief.  If the text is too short or unclear, say so."
     ),
-    model=Ollama(id="llama3"),
+    model=OpenRouter(
+        id="openai/gpt-4o-mini",
+        api_key=os.getenv("OPENROUTER_API_KEY")
+    ),
 )
 
 
@@ -73,7 +75,7 @@ agent = Agent(
 config = {
     "author": "your.email@example.com",
     "name": "pdf_research_agent",
-    "description": "Summarises PDF files and document text using an LLM.",
+    "description": "Summarises PDF files and document text using OpenRouter.",
     "version": "1.0.0",
     "capabilities": {},
     "auth": {"enabled": False},
