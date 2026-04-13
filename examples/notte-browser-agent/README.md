@@ -35,12 +35,14 @@ Notte is unusual among agent building blocks in that it ships both the runtime (
    cd /path/to/bindu
    ```
 
-2. **Install Notte alongside Bindu**:
+2. **Install Notte alongside Bindu** (version pin matters):
    ```bash
-   uv add notte
+   uv pip install 'notte>=1.8.12'
    # or, inside a project venv:
-   # pip install notte
+   # pip install 'notte>=1.8.12'
    ```
+
+   > ⚠️ **Pin to `>=1.8.12`.** Older versions (1.6.x) on PyPI ship a stricter `pydantic` session model that rejects fields returned by the current Notte API, producing `extra_forbidden` validation errors. `uv add notte` may resolve to an older version depending on your dep graph — use `uv pip install 'notte>=1.8.12'` to be explicit.
 
 3. **Configure environment**:
    ```bash
@@ -109,7 +111,10 @@ notte-browser-agent/
 Ensure `.env` exists in `examples/notte-browser-agent/` with a real key from https://console.notte.cc. `load_dotenv()` reads the local `.env`.
 
 #### `ModuleNotFoundError: No module named 'notte_sdk'`
-Run `uv add notte` (or `pip install notte` inside your venv).
+Run `uv pip install 'notte>=1.8.12'` (or `pip install 'notte>=1.8.12'` inside your venv).
+
+#### `pydantic_core._pydantic_core.ValidationError: ... extra_forbidden`
+Your resolved `notte` version is too old. Upgrade with `uv pip install 'notte>=1.8.12'`.
 
 #### Agent returns no answer / "ran out of steps"
 Raise `NOTTE_MAX_STEPS` in `.env`, or switch `NOTTE_REASONING_MODEL` to a stronger model (e.g. `anthropic/claude-sonnet-4-5`). Don't just retry with the same config — it will fail identically.
